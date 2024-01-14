@@ -1,17 +1,14 @@
-version: '3.9'
-
+version: "3"
 services:
-  postgres:
-    image: postgres:latest
-    container_name: GangE
-    environment:
-      POSTGRES_DB: Dongo
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: 1234
+  postgresql:
+    image: postgres
+    restart: always
+    container_name: Dongo
     ports:
       - "5432:5432"
+    environment:
+      POSTGRES_DB: Dongo   # 데이터베이스 이름 설정
+      POSTGRES_USER: admin  # 사용자명 설정
+      POSTGRES_PASSWORD: 1234  # 비밀번호 설정
     volumes:
-      - pgdata:/var/lib/postgresql/data
-
-volumes:
-  pgdata:
+      - ./data/postgres/:/var/lib/postgresql/data
