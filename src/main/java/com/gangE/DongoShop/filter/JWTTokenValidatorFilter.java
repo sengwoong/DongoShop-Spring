@@ -27,22 +27,35 @@ public class JWTTokenValidatorFilter  extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         String jwt = request.getHeader(SecurityConstants.JWT_HEADER);
+        System.out.println(jwt);
+        System.out.println(jwt);
+        System.out.println(jwt);
+        System.out.println(jwt);
         if (null != jwt) {
             try {
-                SecretKey key = Keys.hmacShaKeyFor(
-                        SecurityConstants.JWT_KEY.getBytes(StandardCharsets.UTF_8));
+                SecretKey key = Keys.hmacShaKeyFor(SecurityConstants.JWT_KEY.getBytes(StandardCharsets.UTF_8));
+
+
+
 
                 Claims claims = Jwts.parser()
                         .setSigningKey(key)
                         .parseClaimsJws(jwt)
                         .getBody();
+
+
+                System.out.println(claims);
+                System.out.println(claims);
+                System.out.println(claims);
+                System.out.println(claims);
+
                 String username = String.valueOf(claims.get("username"));
                 String authorities = (String) claims.get("authorities");
                 Authentication auth = new UsernamePasswordAuthenticationToken(username, null,
                         AuthorityUtils.commaSeparatedStringToAuthorityList(authorities));
                 SecurityContextHolder.getContext().setAuthentication(auth);
             } catch (Exception e) {
-                throw new BadCredentialsException("Invalid Token received!");
+                System.out.println(e);
             }
 
         }
@@ -53,7 +66,7 @@ public class JWTTokenValidatorFilter  extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) {
 
 
-        return request.getServletPath().equals("/user");
+        return !request.getServletPath().equals("/user");
     }
 
 }

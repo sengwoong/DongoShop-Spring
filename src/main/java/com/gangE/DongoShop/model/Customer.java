@@ -1,10 +1,8 @@
 package com.gangE.DongoShop.model;
 
-import co.elastic.clients.elasticsearch.core.reindex.RemoteSource;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,7 +17,6 @@ import java.util.Set;
 public final class Customer {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO,generator="native")
     @GenericGenerator(name = "native",strategy = "native")
     @Column(name = "customer_id")
     private int id;
@@ -43,6 +40,5 @@ public final class Customer {
     @JsonIgnore
     @OneToMany(mappedBy="customer",fetch=FetchType.LAZY)
     private Set<Authority> authorities;
-
 
 }

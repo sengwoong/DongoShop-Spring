@@ -1,9 +1,11 @@
 package com.gangE.DongoShop.config;
 
-
-import com.gangE.DongoShop.model.Authority;
+import com.gangE.DongoShop.constants.SecurityConstants;
 import com.gangE.DongoShop.model.Customer;
 import com.gangE.DongoShop.repository.CustomerRepository;
+import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -15,9 +17,12 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+
+import static com.gangE.DongoShop.util.Token.CreateToekn;
 
 @Component
 public class DongoUsernamePwdAuthenticationProvider implements AuthenticationProvider {
@@ -27,7 +32,7 @@ public class DongoUsernamePwdAuthenticationProvider implements AuthenticationPro
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
+// 관리자 로그인
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String username = authentication.getName();
@@ -38,20 +43,22 @@ public class DongoUsernamePwdAuthenticationProvider implements AuthenticationPro
         System.out.println(customer);
         if (customer != null) {
             if (passwordEncoder.matches(pwd, customer.getPwd())) {
-                return new UsernamePasswordAuthenticationToken(username, pwd, getGrantedAuthorities(customer.getAuthorities()));
+
+                return new UsernamePasswordAuthenticationToken(username, pwd, getGrantedAuthorities(customer));
             } else {
                 throw new BadCredentialsException("Invalid password!");
             }
-        }else {
+        } else {
             throw new BadCredentialsException("No user registered with this details!");
         }
     }
 
-    private List<GrantedAuthority> getGrantedAuthorities(Set<Authority> authorities) {
+    @Transactional
+    private List<GrantedAuthority> getGrantedAuthorities(Customer customer) {
+        // 패치 조인을 사용하여 authorities를 로딩
+        Customer customerWithAuthorities = customerRepository.findByIdWithAuthorities(customer.getId());
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        for (Authority authority : authorities) {
-            grantedAuthorities.add(new SimpleGrantedAuthority(authority.getName()));
-        }
+        grantedAuthorities.add(new SimpleGrantedAuthority(customerWithAuthorities.getRole()));
         return grantedAuthorities;
     }
 
@@ -59,5 +66,4 @@ public class DongoUsernamePwdAuthenticationProvider implements AuthenticationPro
     public boolean supports(Class<?> authentication) {
         return (UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication));
     }
-
 }
