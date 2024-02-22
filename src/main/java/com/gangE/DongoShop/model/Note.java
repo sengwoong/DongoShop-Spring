@@ -16,7 +16,7 @@ public class Note {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @OneToMany
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private List<Authority> user;
 

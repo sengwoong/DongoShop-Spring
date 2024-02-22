@@ -1,12 +1,11 @@
 package com.gangE.DongoShop.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+
+// 어스에서 가능한지 확인해보기
 @Entity
 @Getter
 @Setter
@@ -17,4 +16,9 @@ public class UserGroupMembership {
 
     private String name;
     private String type;
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_group_id")
+    private UserGroupMembership group;
 }

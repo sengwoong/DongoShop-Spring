@@ -16,9 +16,6 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private Customer postCustomer;
 
     private String title;
     private String content;
@@ -29,6 +26,10 @@ public class Post {
     private byte[] img;
 
     private LocalDateTime createdAt;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private Customer postCustomer;
 
 
     @OneToMany
