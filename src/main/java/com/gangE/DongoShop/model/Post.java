@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -15,12 +16,14 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private Authority user;
+    private Customer postCustomer;
 
+    private String title;
     private String content;
-    private int downloadItem;
+
+
 
     @Lob
     private byte[] img;
@@ -28,5 +31,17 @@ public class Post {
     private LocalDateTime createdAt;
 
 
+    @OneToMany
+    @JoinColumn(name = "like_post_id")
+    private List<LikePost> postLike;
+
+    @OneToMany
+    @JoinColumn(name = "product_id")
+    private List<Product> productId;
+
+    @PrePersist
+    protected void onCreateTime() {
+        createdAt = LocalDateTime.now();
+    }
 
 }

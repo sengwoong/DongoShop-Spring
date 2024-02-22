@@ -2,6 +2,7 @@ package com.gangE.DongoShop.filter;
 
 
 import com.gangE.DongoShop.constants.SecurityConstants;
+import com.gangE.DongoShop.util.Token;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -19,6 +20,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import javax.crypto.SecretKey;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 public class JWTTokenValidatorFilter  extends OncePerRequestFilter {
 
@@ -27,33 +29,23 @@ public class JWTTokenValidatorFilter  extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         String jwt = request.getHeader(SecurityConstants.JWT_HEADER);
-        System.out.println(jwt);
-        System.out.println(jwt);
-        System.out.println(jwt);
-        System.out.println(jwt);
         if (null != jwt) {
             try {
-                SecretKey key = Keys.hmacShaKeyFor(SecurityConstants.JWT_KEY.getBytes(StandardCharsets.UTF_8));
-
-
-
-
-                Claims claims = Jwts.parser()
-                        .setSigningKey(key)
-                        .parseClaimsJws(jwt)
-                        .getBody();
-
-
-                System.out.println(claims);
-                System.out.println(claims);
-                System.out.println(claims);
-                System.out.println(claims);
+                Claims claims =   Token.parseToken(jwt);
 
                 String username = String.valueOf(claims.get("username"));
-                String authorities = (String) claims.get("authorities");
-                Authentication auth = new UsernamePasswordAuthenticationToken(username, null,
-                        AuthorityUtils.commaSeparatedStringToAuthorityList(authorities));
-                SecurityContextHolder.getContext().setAuthentication(auth);
+                List<String> authorities = (List<String>) claims.get("authorities");
+
+                if (authorities == null || authorities.isEmpty()) {
+                    Authentication auth = new UsernamePasswordAuthenticationToken(username, null, null);
+                    SecurityContextHolder.getContext().setAuthentication(auth);
+                } else {
+                    String authoritiesAsString = String.join(",", authorities);
+                    Authentication auth = new UsernamePasswordAuthenticationToken(username, null,
+                            AuthorityUtils.commaSeparatedStringToAuthorityList(authoritiesAsString));
+                    SecurityContextHolder.getContext().setAuthentication(auth);
+                }
+
             } catch (Exception e) {
                 System.out.println(e);
             }
@@ -66,7 +58,7 @@ public class JWTTokenValidatorFilter  extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) {
 
 
-        return !request.getServletPath().equals("/user");
+        return request.getServletPath().equals("/user");
     }
 
 }

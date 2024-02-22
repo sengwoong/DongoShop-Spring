@@ -1,23 +1,22 @@
 package com.gangE.DongoShop.filter;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.util.StringUtils;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
+public class RequestValidationBeforeFilter implements Filter {
 
-public class RequestValidationBeforeFilter  implements Filter {
-
-    public static final String AUTHENTICATION_SCHEME_BASIC = "Basic";
-    private Charset credentialsCharset = StandardCharsets.UTF_8;
+    private static final String SECRET_KEY = "YourSecretKeyHere";
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -25,28 +24,28 @@ public class RequestValidationBeforeFilter  implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
         String header = req.getHeader(AUTHORIZATION);
-        if (header != null) {
-            header = header.trim();
-            if (StringUtils.startsWithIgnoreCase(header, AUTHENTICATION_SCHEME_BASIC)) {
-                byte[] base64Token = header.substring(6).getBytes(StandardCharsets.UTF_8);
-                byte[] decoded;
-                try {
-                    decoded = Base64.getDecoder().decode(base64Token);
-                    String token = new String(decoded, credentialsCharset);
-                    int delim = token.indexOf(":");
-                    if (delim == -1) {
-                        throw new BadCredentialsException("Invalid basic authentication token");
-                    }
-                    String email = token.substring(0, delim);
-                    if (email.toLowerCase().contains("test")) {
-                        res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                        return;
-                    }
-                } catch (IllegalArgumentException e) {
-                    throw new BadCredentialsException("Failed to decode basic authentication token");
+        if (header != null && header.startsWith("Bearer ")) {
+            String token = header.substring(7); // "Bearer " 이후의 부분을 토큰으로 간주
+            try {
+                Claims claims = Jwts.parserBuilder()
+                        .setSigningKey(SECRET_KEY.getBytes(StandardCharsets.UTF_8))
+                        .build()
+                        .parseClaimsJws(token)
+                        .getBody();
+
+                // 토큰의 만료 여부 확인
+                if (claims.getExpiration().before(new java.util.Date())) {
+                    throw new BadCredentialsException("Token expired");
                 }
+
+                // 기타 클레임 확인 등의 추가 검증 로직 추가 가능
+
+            } catch (JwtException e) {
+                throw new BadCredentialsException("Invalid token");
             }
         }
         chain.doFilter(request, response);
     }
+
+    // 다른 메서드들은 삭제
 }

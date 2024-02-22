@@ -15,9 +15,9 @@ public class Alarm {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private Authority user;
+    private Customer user;
 
     private String message;
 

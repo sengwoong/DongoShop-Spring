@@ -9,17 +9,17 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-public class Like {
+public class LikePost {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "user_id")
     private Authority user;
 

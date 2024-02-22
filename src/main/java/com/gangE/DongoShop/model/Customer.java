@@ -17,10 +17,11 @@ import java.util.Set;
 public final class Customer {
 
     @Id
-    @GenericGenerator(name = "native",strategy = "native")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "customer_id")
     private int id;
 
+    @Column(nullable = false, unique = true)
     private String name;
 
     @Column(unique = true)
@@ -40,5 +41,6 @@ public final class Customer {
     @JsonIgnore
     @OneToMany(mappedBy="customer",fetch=FetchType.LAZY)
     private Set<Authority> authorities;
+
 
 }

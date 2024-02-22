@@ -14,13 +14,13 @@ class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "user_id")
-    private Authority user;
+    private Customer user;
 
     private String toUser;
     private String content;

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -15,13 +16,13 @@ public class Note {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne
+    @OneToMany
     @JoinColumn(name = "user_id")
-    private Authority user;
+    private List<Authority> user;
 
-    @ManyToOne
-    @JoinColumn(name = "exam_id")
-    private Exam exam;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
+    private Product product;
 
     private String content;
 

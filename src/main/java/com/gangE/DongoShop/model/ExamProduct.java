@@ -4,22 +4,24 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
-public class UserSchedule {
+public class ExamProduct {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private Customer user;
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "schedule_id")
-    private Schedule schedule;
+    @JoinColumn(name = "product_id")
+    private Product product;
 
-    // Getters and Setters
+    @OneToMany
+    @JoinColumn(name = "word_id")
+    private List<Word> word;
+
+
 }

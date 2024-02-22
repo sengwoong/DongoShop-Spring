@@ -16,13 +16,13 @@ public class Point {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private Authority user;
 
     private int point;
 
-    private LocalDateTime playedAt;
+    private LocalDateTime transactionData;
 
-    // Getters and Setters
+
 }
