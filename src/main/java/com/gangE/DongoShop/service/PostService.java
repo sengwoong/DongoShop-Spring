@@ -33,8 +33,8 @@ public class PostService {
     }
 
 
-
-
+// 포스트 유저가 로그인한 토큰을록 분리하여 서비스 등록
+// 로그인시만 포스트 등록이 가능
     public Post createPartialPost(PostDao postDao) {
         // 현재 인증된 사용자의 이름 가져오기
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -54,7 +54,7 @@ public class PostService {
         // CustomerRepository를 사용하여 현재 사용자를 찾습니다.
         Customer customer = customerRepository.findByName(username);
 
-        // 로그인이후에 서비스 사용시 버그있는지 확인을 위하여 로그인 페이지 부터만들어봐야하나?
+        // 로그인 안했을때 포스트 등록을 막아야함 (토큰없을때도 예외처)
         logger.info("customer {}", customer);
         logger.info("customer: {}", customer);
         logger.info("customer: {}", customer);

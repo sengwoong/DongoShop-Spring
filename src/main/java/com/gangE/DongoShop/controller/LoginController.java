@@ -32,21 +32,16 @@ import static com.gangE.DongoShop.util.Token.CreateToekn;
 @RestController
 public class LoginController {
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
-
     @Autowired
     private CustomerRepository customerRepository;
-
-
     @Autowired
     private PasswordEncoder passwordEncoder;
-
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody Customer customer) {
         Customer savedCustomer = null;
         ResponseEntity response = null;
         try {
             String hashPwd = passwordEncoder.encode(customer.getPwd());
-
             customer.setPwd(hashPwd);
             customer.setCreateDt(String.valueOf(new Date(System.currentTimeMillis())));
             customerRepository.save(customer);
@@ -66,22 +61,11 @@ public class LoginController {
     @GetMapping("/user")
     public String loginUser(@RequestBody Customer authentication, HttpServletResponse response) {
 
-
         Customer customer = customerRepository.findByEmailWithAuthorities(authentication.getEmail());
-
-
-        logger.info("Login customer aaaaa: {}", customer);
-
+        logger.info("Login customer : {}", customer);
         if (customer != null && passwordEncoder.matches(authentication.getPwd(),customer.getPwd())) {
             SecretKey key = Keys.hmacShaKeyFor(SecurityConstants.JWT_KEY.getBytes(StandardCharsets.UTF_8));
-
             String jwt = CreateToekn(customer, key);
-
-            new UsernamePasswordAuthenticationToken(customer.getName(), customer.getPwd(), getGrantedAuthorities(customer));
-
-
-
-
             return jwt;
         } else {
             return null;
@@ -89,14 +73,7 @@ public class LoginController {
 
 
     }
-    @Transactional
-    private List<GrantedAuthority> getGrantedAuthorities(Customer customer) {
-        // 패치 조인을 사용하여 authorities를 로딩
-        Customer customerWithAuthorities = customerRepository.findByIdWithAuthorities(customer.getId());
-        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        grantedAuthorities.add(new SimpleGrantedAuthority(customerWithAuthorities.getRole()));
-        return grantedAuthorities;
-    }
+
 
 
 }

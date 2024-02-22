@@ -45,6 +45,8 @@ public class PostController {
     }
 
     // 새로운 게시물을 생성합니다.
+    // 로그인유저만 가능하게 해야함 합니다.
+    // 메소드기반락
     @PostMapping
     public ResponseEntity<Post> createPost(@Valid @RequestBody PostDao post) {
         Post savedPost = postService.createPartialPost(post);
@@ -52,12 +54,15 @@ public class PostController {
     }
 
     // 기존의 게시물을 수정합니다.
+    // 본인이 작성한 포스트만 가능하게 허락 해야합니다.
+    // 메소드 기반락 + 자신이 적었는지 포스트에서 검증
     @PutMapping("/{postId}")
     public ResponseEntity<Post> updatePost(@PathVariable(value = "postId") Long postId,
                                            @Valid @RequestBody Post postDetails) {
         Post post = postRepository.findById(postId)
                 .orElseThrow();
 
+        // Todo: 포스트의 유저가 자신일때만 수정가능하게 만들어야합니다. 서비스로 뺴기
         post.setContent(postDetails.getContent());
         post.setImg(postDetails.getImg());
         // 나머지 필드도 마찬가지로 업데이트합니다.
@@ -66,7 +71,9 @@ public class PostController {
         return new ResponseEntity<>(updatedPost, HttpStatus.OK);
     }
 
-    // 특정 ID의 게시물을 삭제합니다.
+    // 기존의 게시물을 수정합니다.
+    // 본인이 작성한 포스트만 가능하게 허락 해야합니다.
+    // 메소드 기반락 + 자신이 적었는지 포스트에서 검증
     @DeleteMapping("/{postId}")
     public ResponseEntity<?> deletePost(@PathVariable(value = "postId") Long postId) {
         Post post = postRepository.findById(postId)
