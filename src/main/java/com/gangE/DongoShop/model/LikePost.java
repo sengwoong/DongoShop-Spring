@@ -1,5 +1,7 @@
 package com.gangE.DongoShop.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,11 +20,13 @@ public class LikePost {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @OneToOne(fetch =  FetchType.LAZY)
+    @JsonIgnore
+    @ManyToOne(fetch =  FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @OneToOne(fetch =  FetchType.LAZY)
+    @JsonIgnore
+    @ManyToOne(fetch =  FetchType.LAZY)
     @JoinColumn(name = "customer_id")
     private Customer user;
 

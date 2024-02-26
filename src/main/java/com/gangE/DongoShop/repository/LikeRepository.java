@@ -14,12 +14,5 @@ public interface LikeRepository extends JpaRepository<LikePost, Long> {
 
     Long countLikePostByPost_Id(Long postId);
 
-    // 내가 좋아요를 했는지 검색
-
-
-    LikePost findLikePostByUser_IdAndPost_Id(Customer customer, Long postId);
-
-    void deleteByPostAndUser(Customer customer, Post post);
-
     LikePost findByUserAndPost(Customer customer, Post post);
 }

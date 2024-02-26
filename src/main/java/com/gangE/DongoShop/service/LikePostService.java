@@ -36,7 +36,7 @@ public class LikePostService {
         return likeRepository.countLikePostByPost_Id(postId);
     }
 
-    // 특정 사용자가 특정 포스트에 성대해 좋아요를 했는지 확인
+    // 특정 사용자가 특정 포스트에 대한 좋아요를 했는지 확인
     public String findLikePostByUserIdAndPostId(Long postId) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Customer customer = customerRepository.findByName(username);
@@ -51,9 +51,6 @@ public class LikePostService {
 
         LikePost content = likeRepository.findByUserAndPost(customer, post);
 
-        System.out.println(content);
-        System.out.println(content);
-        System.out.println(content);
         if (content == null) {
             return "좋아요 중이 아닙니다.";
         }
@@ -63,7 +60,6 @@ public class LikePostService {
     }
 
     // 좋아요 생성
-    // 포스트 아이디를 받고 받은 포스트 아이디에서 다시 포스트를 검색하여 생
     public String createLikePost(long postId) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Customer customer = customerRepository.findByName(username);
@@ -86,6 +82,7 @@ public class LikePostService {
 
     }
 
+    //todo 포스트가 없어도 되야하니 수정해야 합니다.
     public String deleteLikePostByUserIdAndPostId(Long postId) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Customer customer = customerRepository.findByName(username);

@@ -1,5 +1,8 @@
 package com.gangE.DongoShop.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,29 +19,35 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private Customer postCustomer;
 
     private String title;
     private String content;
 
 
 
-    @Lob
-    private byte[] img;
+//    @Lob
+//    private byte[] img;
 
     private LocalDateTime createdAt;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id")
-    private Customer postCustomer;
 
-
-    @OneToMany
-    @JoinColumn(name = "like_post_id")
+    @JsonIgnore
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<LikePost> postLike;
 
-    @OneToMany
-    @JoinColumn(name = "product_id")
+    @JsonIgnore
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<CommentPost> commentPost;
+
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "post")
     private List<Product> productId;
+
+
 
     @PrePersist
     protected void onCreateTime() {

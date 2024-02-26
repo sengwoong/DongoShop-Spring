@@ -38,34 +38,10 @@ public class PostService {
     public Post createPartialPost(PostDao postDao) {
         // 현재 인증된 사용자의 이름 가져오기
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-
-
-
-
-        logger.info("SecurityContextHolder.getContext().getAuthentication:{}", SecurityContextHolder.getContext().getAuthentication());
-        logger.info("Creating partial post for user: {}", username);
-        logger.info("Creating partial post for user: {}", username);
-        logger.info("Creating partial post for user: {}", username);
-        logger.info("Creating partial post for user: {}", username);
-        logger.info("Creating partial post for user: {}", username);
-        logger.info("Creating partial post for user: {}", username);
-        logger.info("Creating partial post for user: {}", username);
-
-        // CustomerRepository를 사용하여 현재 사용자를 찾습니다.
+        //CustomerRepository를 사용하여 현재 사용자를 찾습니다.
         Customer customer = customerRepository.findByName(username);
-
-        // 로그인 안했을때 포스트 등록을 막아야함 (토큰없을때도 예외처)
-        logger.info("customer {}", customer);
-        logger.info("customer: {}", customer);
-        logger.info("customer: {}", customer);
-
         // Post 객체 생성 및 속성 설정
         Post post = new Post();
-        post.setContent(postDao.getContent());
-        post.setTitle(postDao.getTitle());
-        post.setImg(postDao.getImg());
-        post.setCreatedAt(LocalDateTime.now());
-        post.setPostCustomer(customer);
         postRepository.save(post);
         // 생성된 Post 저장 및 반환
         return post;

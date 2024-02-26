@@ -64,7 +64,7 @@ public class PostController {
 
         // Todo: 포스트의 유저가 자신일때만 수정가능하게 만들어야합니다. 서비스로 뺴기
         post.setContent(postDetails.getContent());
-        post.setImg(postDetails.getImg());
+//        post.setImg(postDetails.getImg());
         // 나머지 필드도 마찬가지로 업데이트합니다.
 
         Post updatedPost = postRepository.save(post);

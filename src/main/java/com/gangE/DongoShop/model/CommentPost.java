@@ -1,5 +1,6 @@
 package com.gangE.DongoShop.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,21 +10,25 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-class Comment {
+public class CommentPost {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @OneToOne
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @OneToOne
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private Customer user;
 
+    @Column(name = "to_user")
     private String toUser;
-    private String content;
 
-    private LocalDateTime createdAt;
+    @Column(name = "comment_text")
+    private String commentText;
+
 }
