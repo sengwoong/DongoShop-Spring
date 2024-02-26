@@ -1,10 +1,7 @@
 package com.gangE.DongoShop.service;
 
-
-
 import com.gangE.DongoShop.model.CommentPost;
 import com.gangE.DongoShop.model.Customer;
-import com.gangE.DongoShop.model.LikePost;
 import com.gangE.DongoShop.model.Post;
 import com.gangE.DongoShop.repository.CommentPostRepository;
 import com.gangE.DongoShop.repository.CustomerRepository;
@@ -24,78 +21,85 @@ public class CommentService {
     private final CommentPostRepository commentRepository;
     private final CustomerRepository customerRepository;
     private final PostRepository postRepository;
+
     @Autowired
-    public CommentService(CommentPostRepository commentRepository, CustomerRepository customerRepository, PostRepository postRepository ) {
-        this.postRepository =postRepository;
+    public CommentService(CommentPostRepository commentRepository, CustomerRepository customerRepository, PostRepository postRepository) {
         this.commentRepository = commentRepository;
         this.customerRepository = customerRepository;
+        this.postRepository = postRepository;
     }
 
-
-
+    /**
+     * 새로운 댓글 생성
+     */
     @Transactional
     public void createNewComment(Long postId, String commentText, Long toUser) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        Customer customer = customerRepository.findByName(username);
+        Customer customer = getCurrentCustomer();
 
-        if (customer == null) {
-            throw new RuntimeException("로그인한 사용자를 찾을 수 없습니다.");
-        }
+        // 대상 사용자가 있는 경우 대상 사용자 정보 가져오기
+        Customer targetUser = (toUser != null) ? customerRepository.findById(toUser).orElse(null) : null;
 
-        if (toUser != null) {
-            // 대상 사용자 정보 가져오기
-            Customer getToUser = customerRepository.findById(toUser)
-                    .orElseThrow(() -> new RuntimeException("대상 사용자를 찾을 수 없습니다."));
-
-            commentRepository.createNewComment(postId, (long) customer.getId(), commentText, toUser);
-        } else {
-            // 새로운 커맨트 생성 (대상 사용자가 없는 경우)
-            commentRepository.createNewComment(postId, (long) customer.getId(), commentText);
-        }
+        commentRepository.createNewComment(postId, customer.getId(), commentText, (targetUser != null) ? targetUser.getId() : null);
     }
 
+    /**
+     * 주어진 게시물 ID에 대한 모든 댓글 가져오기
+     */
     @Transactional(readOnly = true)
     public List<CommentPost> getAllCommentsByPostId(Long postId) {
-        // 현재 인증된 사용자의 정보 가져오기
-
-
-        // 주어진 postId에 해당하는 포스트 가져오기
         Optional<Post> postOptional = postRepository.findById(postId);
+        Post post = postOptional.orElse(null);
 
-        // 포스트가 존재하지 않을 경우 빈 리스트 반환
-        if (postOptional.isEmpty()) {
+        if (post == null) {
             return Collections.emptyList();
         }
-        Post post = postOptional.get();
 
-        // 해당 포스트의 모든 댓글 가져오기
         return commentRepository.findAllByPost(post);
     }
 
+    /**
+     * 댓글 삭제
+     */
     @Transactional
     public void deleteCommentsByPostId(Long postId, long commentId) {
-        // 현재 인증된 사용자 이름 가져오기
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        // 사용자 이름으로 사용자 정보 가져오기
-        Customer customer = customerRepository.findByName(username);
+        Customer customer = getCurrentCustomer();
 
-        // 주어진 commentId로 댓글 가져오기
         Optional<CommentPost> commentOptional = commentRepository.findById(commentId);
+        CommentPost comment = commentOptional.orElse(null);
 
-        // 댓글이 존재하지 않을 경우 메서드 종료
-        if (commentOptional.isEmpty()) {
-            return;
-        }
-
-        CommentPost comment = commentOptional.get();
-
-        // 댓글을 작성한 사용자와 현재 인증된 사용자가 같은지 확인
-        if (comment.getUser().getId() == customer.getId()) {
-            // 댓글 삭제
+        if (comment != null && comment.getUser().getId().equals(customer.getId())) {
             commentRepository.delete(comment);
-        } else {
-
-            return;
         }
+    }
+
+    /**
+     * 댓글 수정
+     */
+    @Transactional
+    public void updateComment(Long commentId, String newContent, Long toUser) {
+        Customer customer = getCurrentCustomer();
+
+        Optional<CommentPost> commentOptional = commentRepository.findById(commentId);
+        CommentPost comment = commentOptional.orElse(null);
+
+        if (comment != null && comment.getUser().getId().equals(customer.getId())) {
+            // 대상 사용자 정보가 제공된 경우 업데이트
+            if (toUser != null) {
+                Customer targetUser = customerRepository.findById(toUser).orElse(null);
+                if (targetUser != null) {
+                    comment.setToUser(String.valueOf(targetUser.getId()));
+                }
+            }
+            comment.setCommentText(newContent);
+            commentRepository.save(comment);
+        }
+    }
+
+    /**
+     * 현재 인증된 사용자 정보 가져오기
+     */
+    private Customer getCurrentCustomer() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return customerRepository.findByName(username);
     }
 }

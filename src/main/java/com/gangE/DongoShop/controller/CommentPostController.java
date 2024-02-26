@@ -32,7 +32,6 @@ public class CommentPostController {
         return commentService.getAllCommentsByPostId(postId);
     }
 
-    // todo DeleteMapping 은 서비스로 만들어야 할 것 같습니다.
     @DeleteMapping("/delete/post/{postId}/comment/{commentId}")
     public void deleteCommentByPostIdAndUserId(@PathVariable Long postId,@PathVariable long commentId)  {
         commentService.deleteCommentsByPostId(postId,commentId);
@@ -43,5 +42,8 @@ public class CommentPostController {
         commentService.createNewComment(postId, commentPostDto.getCommentText() ,commentPostDto.getToUser() );
     }
 
-    // 다른 컨트롤러 메서드들을 필요에 따라 추가할 수 있습니다.
+    @PutMapping("/update/{commentId}")
+    public void updateComment(@PathVariable Long commentId, @RequestBody  CommentPostDto commentPostDto) {
+        commentService.updateComment(commentId, commentPostDto.getCommentText(),commentPostDto.getToUser());
+    }
 }
