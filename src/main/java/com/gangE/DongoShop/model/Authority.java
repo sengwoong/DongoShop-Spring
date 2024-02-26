@@ -3,12 +3,16 @@ package com.gangE.DongoShop.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Getter
 @Setter
 @Table(name = "authorities")
+@DynamicInsert
+@DynamicUpdate
 public class Authority {
 
     @Id
