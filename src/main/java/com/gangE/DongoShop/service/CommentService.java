@@ -39,7 +39,7 @@ public class CommentService {
         // 대상 사용자가 있는 경우 대상 사용자 정보 가져오기
         Customer targetUser = (toUser != null) ? customerRepository.findById(toUser).orElse(null) : null;
 
-        commentRepository.createNewComment(postId, customer.getId(), commentText, (targetUser != null) ? targetUser.getId() : null);
+        commentRepository.createNewComment(postId, (long) customer.getId(), commentText, (targetUser != null) ? (long) targetUser.getId() : null);
     }
 
     /**
@@ -67,7 +67,7 @@ public class CommentService {
         Optional<CommentPost> commentOptional = commentRepository.findById(commentId);
         CommentPost comment = commentOptional.orElse(null);
 
-        if (comment != null && comment.getUser().getId().equals(customer.getId())) {
+        if (comment != null && comment.getUser().getId() == customer.getId()) {
             commentRepository.delete(comment);
         }
     }
@@ -82,7 +82,7 @@ public class CommentService {
         Optional<CommentPost> commentOptional = commentRepository.findById(commentId);
         CommentPost comment = commentOptional.orElse(null);
 
-        if (comment != null && comment.getUser().getId().equals(customer.getId())) {
+        if (comment != null && comment.getUser().getId() == customer.getId()) {
             // 대상 사용자 정보가 제공된 경우 업데이트
             if (toUser != null) {
                 Customer targetUser = customerRepository.findById(toUser).orElse(null);
