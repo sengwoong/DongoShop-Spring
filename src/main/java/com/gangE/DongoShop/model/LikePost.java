@@ -9,19 +9,22 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
+@Table(uniqueConstraints={
+        @UniqueConstraint(columnNames = {"post_id", "user_id"})
+})
 public class LikePost {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @OneToOne
+    @OneToOne(fetch =  FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private Authority user;
+    @OneToOne(fetch =  FetchType.LAZY)
+    @JoinColumn(name = "customer_id")
+    private Customer user;
 
     private LocalDateTime createdAt;
 

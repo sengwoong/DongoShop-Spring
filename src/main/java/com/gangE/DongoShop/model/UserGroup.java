@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -18,5 +20,5 @@ public class UserGroup {
 
     @OneToMany
     @JoinColumn(name = "user_group_membership_id")
-    private UserGroupMembership group;
+    private List<UserGroupMembership> group;
 }

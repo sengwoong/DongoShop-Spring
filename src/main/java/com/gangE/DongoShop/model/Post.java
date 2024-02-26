@@ -28,7 +28,7 @@ public class Post {
     private LocalDateTime createdAt;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "customer_id")
     private Customer postCustomer;
 
 

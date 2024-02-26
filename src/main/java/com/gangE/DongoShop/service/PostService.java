@@ -58,7 +58,6 @@ public class PostService {
         logger.info("customer {}", customer);
         logger.info("customer: {}", customer);
         logger.info("customer: {}", customer);
-        logger.info("customer {}", customer);
 
         // Post 객체 생성 및 속성 설정
         Post post = new Post();
@@ -67,9 +66,9 @@ public class PostService {
         post.setImg(postDao.getImg());
         post.setCreatedAt(LocalDateTime.now());
         post.setPostCustomer(customer);
-
+        postRepository.save(post);
         // 생성된 Post 저장 및 반환
-        return postRepository.save(post);
+        return post;
     }
 
 

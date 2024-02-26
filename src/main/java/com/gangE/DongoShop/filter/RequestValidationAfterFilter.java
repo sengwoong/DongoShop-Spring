@@ -1,8 +1,8 @@
 package com.gangE.DongoShop.filter;
 
+import com.gangE.DongoShop.util.Token;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
 
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,11 +10,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.BadCredentialsException;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-public class RequestValidationBeforeFilter implements Filter {
+public class RequestValidationAfterFilter implements Filter {
 
     private static final String SECRET_KEY = "YourSecretKeyHere";
 
@@ -24,14 +23,10 @@ public class RequestValidationBeforeFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
         String header = req.getHeader(AUTHORIZATION);
-        if (header != null && header.startsWith("Bearer ")) {
-            String token = header.substring(7); // "Bearer " 이후의 부분을 토큰으로 간주
+        if (header != null ) {
+
             try {
-                Claims claims = Jwts.parserBuilder()
-                        .setSigningKey(SECRET_KEY.getBytes(StandardCharsets.UTF_8))
-                        .build()
-                        .parseClaimsJws(token)
-                        .getBody();
+                Claims claims =   Token.parseToken(header);
 
                 // 토큰의 만료 여부 확인
                 if (claims.getExpiration().before(new java.util.Date())) {
