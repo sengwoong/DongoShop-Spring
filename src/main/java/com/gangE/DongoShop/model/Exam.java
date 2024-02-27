@@ -16,8 +16,9 @@ public class Exam {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Lob
-    private byte[] img;
+//    @Lob
+//    private byte[] img;
 
     private String title;
+    private String content;
 }

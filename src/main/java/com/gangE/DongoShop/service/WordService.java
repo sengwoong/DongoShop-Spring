@@ -29,7 +29,7 @@ public class WordService {
 
     public Word saveWord(String word, String definition) {
 
-        if ( definition == null || definition.isEmpty()) {
+        if ( definition == null || word == null) {
             throw new IllegalArgumentException("단어와 정의를 모두 제공해야합니다.");
         }
         Word newWord = new Word();
