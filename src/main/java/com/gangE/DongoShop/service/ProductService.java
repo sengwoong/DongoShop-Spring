@@ -152,11 +152,13 @@ public class ProductService {
 
 
 
-
+    // todo 다음으로 할것
+   // 단어장 주인이면word에서 단어를지우기 프로덕트 주인 == 나 이면 해당 워드 아이디를 get하고 지우
 
 
 
     // todo 다음으로 할것
+
 
     // 단어장을 상품에 연결하기
 
