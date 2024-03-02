@@ -6,6 +6,8 @@ import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -21,4 +23,11 @@ public class Exam {
 
     private String title;
     private String content;
+
+
+
+    @OneToMany(mappedBy = "exam")
+    private List<ExamProduct> exam_product_id;
+
+
 }

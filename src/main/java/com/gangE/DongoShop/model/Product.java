@@ -1,9 +1,11 @@
 package com.gangE.DongoShop.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -37,9 +39,11 @@ public class Product {
     @JoinColumn(name = "post_id")
     private Post post;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "product")
-    private Set<ExamProduct> examProducts;
+    private List<ExamProduct> examProducts;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "product")
     private List<WordProduct> wordProducts;
 

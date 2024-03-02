@@ -5,6 +5,8 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class PostIdDto {
-    private  Long postId;
+public class productId_wordIdDto {
+
+    private int productId;
+    private int wordId;
 }
