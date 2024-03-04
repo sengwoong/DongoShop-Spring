@@ -24,10 +24,6 @@ public class WordController {
         return wordService.saveWord(word.getWord(), word.getDefinition(),productId);
     }
 
-    @GetMapping("select/{WordId}")
-    public Word getWordById(@PathVariable long WordId) {
-        return wordService.getWordById(WordId);
-    }
 
 
     // {id} 는 모두 프로덕트아이디

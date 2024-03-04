@@ -183,10 +183,6 @@ public class WordService   {
 
 
 
-    public Word getWordById(long WordId) {
-        Optional<Word> optionalWord = wordRepository.findById(WordId);
-        return optionalWord.orElse(null);
-    }
 
 
 

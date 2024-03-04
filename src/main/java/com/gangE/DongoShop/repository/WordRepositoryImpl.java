@@ -20,8 +20,7 @@ import static com.gangE.DongoShop.model.QWord.word1;
 import static com.gangE.DongoShop.model.QWordProduct.wordProduct;
 import static org.springframework.util.StringUtils.isEmpty;
 
-@Repository
-@Primary
+
 public class WordRepositoryImpl implements WordRepositoryCustom {
     private final JPAQueryFactory queryFactory;
     public WordRepositoryImpl(EntityManager em) {
@@ -29,7 +28,7 @@ public class WordRepositoryImpl implements WordRepositoryCustom {
     }
 
 
-    // word productid DTO로만들기
+    // 페이징 으로 바꾸기
     @Override
     public List<ProductIdAndWordDto> searchInAllWord(Product product) {
         List<ProductIdAndWordDto> words = queryFactory
