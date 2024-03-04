@@ -2,16 +2,15 @@ package com.gangE.DongoShop.repository;
 
 
 import com.gangE.DongoShop.model.Post;
+import com.gangE.DongoShop.model.PostProduct;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PostRepository extends JpaRepository<Post, Long> {
+public interface PostProductRepository extends JpaRepository<PostProduct, Long> {
 
-    // Get all posts with pagination, ordered by createdAt in descending order
-    Page<Post> findAllByOrderByCreatedAtDesc(Pageable pageable);
 
 }
 

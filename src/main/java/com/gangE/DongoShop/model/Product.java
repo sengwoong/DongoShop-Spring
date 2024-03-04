@@ -31,14 +31,15 @@ public class Product {
 
     private LocalDateTime createdAt;
 
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "customer_id")
     private Customer ProductCustomer;
 
-    @ManyToOne(fetch =  FetchType.LAZY)
-    @JoinColumn(name = "post_id")
-    private Post post;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
+    private List<PostProduct> products;
     @JsonIgnore
     @OneToMany(mappedBy = "product")
     private List<ExamProduct> examProducts;

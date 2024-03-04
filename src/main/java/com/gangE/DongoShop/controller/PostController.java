@@ -1,10 +1,10 @@
 package com.gangE.DongoShop.controller;
 
-import com.gangE.DongoShop.dto.PostDao;
+import com.gangE.DongoShop.dto.PostDto;
+import com.gangE.DongoShop.dto.PostIdProductIdDto;
 import com.gangE.DongoShop.model.Post;
-import com.gangE.DongoShop.repository.PostRepository;
+import com.gangE.DongoShop.service.PostProductService;
 import com.gangE.DongoShop.service.PostService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,75 +12,59 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/posts")
+@RequestMapping("/post")
 public class PostController {
 
-    private final PostRepository postRepository;
+    private final PostService postService;
 
+    private final PostProductService postProductService;
     @Autowired
-    public PostController(PostRepository postRepository) {
-        this.postRepository = postRepository;
+    public PostController(PostService postService, PostProductService postProductService) {
+        this.postService = postService;
+        this.postProductService = postProductService;
     }
 
-    @Autowired
-    private PostService postService;
-
-
-    // 모든 게시물을 페이징하여 반환합니다.
-    @GetMapping
+    @GetMapping("select_all")
     public ResponseEntity<Page<Post>> getAllPosts(Pageable pageable) {
-        Page<Post> posts = postRepository.findAllByOrderByCreatedAtDesc(pageable);
+        Page<Post> posts = postService.getAllPosts(pageable);
         return new ResponseEntity<>(posts, HttpStatus.OK);
     }
 
-    // 특정 ID의 게시물을 반환합니다.
-    @GetMapping("/{postId}")
-    public ResponseEntity<Post> getPostById(@PathVariable(value = "postId") Long postId) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow();
+    @GetMapping("select/{postId}")
+    public ResponseEntity<Optional<Post>> getPostById(@PathVariable(value = "postId") int postId) {
+        Optional<Post> post = postService.getPosts(postId);
         return new ResponseEntity<>(post, HttpStatus.OK);
     }
 
-    // 새로운 게시물을 생성합니다.
-    // 로그인유저만 가능하게 해야함 합니다.
-    // 메소드기반락
-    @PostMapping
-    public ResponseEntity<Post> createPost(@Valid @RequestBody PostDao post) {
-        Post savedPost = postService.createPartialPost(post);
+    @PostMapping("/create")
+    public ResponseEntity<Post> createPost( @RequestBody PostDto postDto) {
+        Post savedPost = postService.createPartialPost(postDto);
         return new ResponseEntity<>(savedPost, HttpStatus.CREATED);
     }
 
-    // 기존의 게시물을 수정합니다.
-    // 본인이 작성한 포스트만 가능하게 허락 해야합니다.
-    // 메소드 기반락 + 자신이 적었는지 포스트에서 검증
-    @PutMapping("/{postId}")
-    public ResponseEntity<Post> updatePost(@PathVariable(value = "postId") Long postId,
-                                           @Valid @RequestBody Post postDetails) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow();
-
-        // Todo: 포스트의 유저가 자신일때만 수정가능하게 만들어야합니다. 서비스로 뺴기
-        post.setContent(postDetails.getContent());
-//        post.setImg(postDetails.getImg());
-        // 나머지 필드도 마찬가지로 업데이트합니다.
-
-        Post updatedPost = postRepository.save(post);
+    @PutMapping("update/{postId}")
+    public ResponseEntity<Optional<Post> > updatePost(@PathVariable(value = "postId") Long postId,
+                                           @RequestBody PostDto postDto) {
+        Optional<Post> updatedPost = postService.updatePartialPost(postId, postDto);
         return new ResponseEntity<>(updatedPost, HttpStatus.OK);
     }
 
-    // 기존의 게시물을 수정합니다.
-    // 본인이 작성한 포스트만 가능하게 허락 해야합니다.
-    // 메소드 기반락 + 자신이 적었는지 포스트에서 검증
-    @DeleteMapping("/{postId}")
+    @DeleteMapping("delect/{postId}")
     public ResponseEntity<?> deletePost(@PathVariable(value = "postId") Long postId) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow();
-
-        postRepository.delete(post);
-
+        postService.deletePartialPost(postId);
         return ResponseEntity.ok().build();
     }
+
+
+    @PostMapping("connect/post/{postId}/product/{productId}")
+    public ResponseEntity<?> connectPost(@PathVariable(value = "postId") int postId, @PathVariable(value = "productId") int productId) {
+        PostIdProductIdDto postIdProductIdDto = new PostIdProductIdDto(postId, productId);
+        postProductService.connectPostProduct(postIdProductIdDto);
+        return ResponseEntity.ok().build();
+    }
+
+
 }

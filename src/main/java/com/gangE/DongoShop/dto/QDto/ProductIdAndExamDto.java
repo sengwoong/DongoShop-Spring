@@ -8,7 +8,6 @@ import org.hibernate.annotations.DynamicUpdate;
 
 @Setter
 @Getter
-@DynamicUpdate
 @NoArgsConstructor
 public class ProductIdAndExamDto {
 

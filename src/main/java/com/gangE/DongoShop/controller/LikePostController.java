@@ -1,18 +1,9 @@
 package com.gangE.DongoShop.controller;
 
-import com.gangE.DongoShop.dto.PostDao;
-import com.gangE.DongoShop.model.LikePost;
-import com.gangE.DongoShop.model.Post;
-import com.gangE.DongoShop.repository.PostRepository;
 import com.gangE.DongoShop.service.LikePostService;
-import com.gangE.DongoShop.service.PostService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 

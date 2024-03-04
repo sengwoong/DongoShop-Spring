@@ -4,14 +4,18 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
-
+@Setter
 @Getter
 @AllArgsConstructor
-public class PostDao {
+public class UserDto {
 
-    private String title;
-    private String content;
-    private byte[] img;
+    // Getter methods
+    private String email;
+    private String pwd;
+
+
+
+
+
+
 }

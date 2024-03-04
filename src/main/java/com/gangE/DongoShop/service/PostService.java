@@ -1,27 +1,20 @@
 package com.gangE.DongoShop.service;
 
-import com.gangE.DongoShop.dto.PostDao;
+import com.gangE.DongoShop.dto.PostDto;
 import com.gangE.DongoShop.model.Customer;
 import com.gangE.DongoShop.model.Post;
 import com.gangE.DongoShop.repository.CustomerRepository;
 import com.gangE.DongoShop.repository.PostRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+
+import java.util.Optional;
 
 @Service
 public class PostService {
-    private static final Logger logger = LoggerFactory.getLogger(PostService.class);
 
     private final PostRepository postRepository;
     private final CustomerRepository customerRepository;
@@ -32,27 +25,72 @@ public class PostService {
         this.customerRepository = customerRepository;
     }
 
+    public Page<Post> getAllPosts(Pageable pageable) {
+        return postRepository.findAllByOrderByCreatedAtDesc(pageable);
+    }
 
-// 포스트 유저가 로그인한 토큰을록 분리하여 서비스 등록
-// 로그인시만 포스트 등록이 가능
-    public Post createPartialPost(PostDao postDao) {
-        // 현재 인증된 사용자의 이름 가져오기
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        //CustomerRepository를 사용하여 현재 사용자를 찾습니다.
-        Customer customer = customerRepository.findByName(username);
-        // Post 객체 생성 및 속성 설정
+    public Optional<Post> getPosts(int postId) {
+        return postRepository.findById((long)postId);
+    }
+
+    public Post createPartialPost(PostDto postDto) {
+        Customer customer = getAuthenticatedCustomer();
+        if (customer == null) {
+            return null; // or throw an exception
+        }
+
         Post post = new Post();
+        post.setTitle(postDto.getTitle());
+        post.setContent(postDto.getContent());
+        post.setPostCustomer(customer);
         postRepository.save(post);
-        // 생성된 Post 저장 및 반환
         return post;
     }
 
+    public Optional<Post> updatePartialPost(Long postId, PostDto postDto) {
+        Customer customer = getAuthenticatedCustomer();
+        if (customer == null) {
+            return Optional.empty();
+        }
 
+        Optional<Post> postOptional = postRepository.findById(postId);
+        if (postOptional.isEmpty()) {
+            return Optional.empty();
+        }
 
+        Post post = postOptional.get();
+        if (!post.getPostCustomer().equals(customer)) {
+            return Optional.empty();
+        }
+        post.setTitle(postDto.getTitle());
+        post.setContent(postDto.getContent());
+        return Optional.of(postRepository.save(post));
+    }
 
+    public boolean deletePartialPost(Long postId) {
+        Customer customer = getAuthenticatedCustomer();
+        if (customer == null) {
+            return false;
+        }
 
+        Optional<Post> postOptional = postRepository.findById(postId);
+        if (postOptional.isEmpty()) {
+            return false;
+        }
 
-    // todo 프로덕트 포스트를 연결하
+        Post post = postOptional.get();
+        if (!post.getPostCustomer().equals(customer)) {
+            return false;
+        }
+
+        postRepository.delete(post);
+        return true;
+    }
+
+    private Customer getAuthenticatedCustomer() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return customerRepository.findByName(username);
+    }
 
 
 }

@@ -164,10 +164,6 @@ public class WordService   {
 
         Product product = optionalProduct.get();
         if (product.getProductCustomer() != getMyCurrentCustomer()) {
-            System.out.println(getMyCurrentCustomer());
-            System.out.println(product.getProductCustomer() );
-            System.out.println(product.getProductCustomer() != getMyCurrentCustomer());
-            System.out.println(product.getProductCustomer() != getMyCurrentCustomer());
             throw new IllegalArgumentException("나의 포스트가 아닙니다.");
         }
 
@@ -176,7 +172,6 @@ public class WordService   {
         if (word.isEmpty()) {
             throw new IllegalArgumentException("단어가 없습니다.");
         }
-
 
         return  word;
     }
