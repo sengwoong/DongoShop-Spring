@@ -27,5 +27,4 @@ public class Alarm {
 
     private LocalDateTime time;
 
-    // Getters and Setters
 }

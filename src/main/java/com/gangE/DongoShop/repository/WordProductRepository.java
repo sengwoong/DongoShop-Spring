@@ -13,9 +13,6 @@ import org.springframework.stereotype.Repository;
 public interface WordProductRepository extends JpaRepository<WordProduct, Long>{
 
 
-    @Modifying
-    @Query("DELETE FROM WordProduct w WHERE w.word.id = :wordId")
-    void deleteByProductIdAndWordId(@Param("wordId") Long wordId);
 
 
 }
