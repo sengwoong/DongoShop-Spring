@@ -1,5 +1,6 @@
 package com.gangE.DongoShop.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,12 +17,19 @@ public class UserSchedule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @OneToOne
+
+    @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "user_id")
     private Customer user;
 
+
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     @JoinColumn(name = "schedule_id")
     private Schedule schedule;
+
+
+
 
 }
