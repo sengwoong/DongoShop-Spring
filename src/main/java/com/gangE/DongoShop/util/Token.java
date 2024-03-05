@@ -11,6 +11,8 @@ import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
+import static com.gangE.DongoShop.constants.SecurityConstants.JWT_KEY;
+
 public class Token {
     public static String CreateToekn(Customer customer, SecretKey key) {
         String jwt = Jwts.builder()
@@ -28,7 +30,7 @@ public class Token {
     // JWT를 파싱하고 클레임을 반환
     public static Claims parseToken(String token) {
 
-        SecretKey key = Keys.hmacShaKeyFor(SecurityConstants.JWT_KEY.getBytes(StandardCharsets.UTF_8));
+        SecretKey key = Keys.hmacShaKeyFor(JWT_KEY.getBytes(StandardCharsets.UTF_8));
         return    Jwts.parser()
                 .setSigningKey(key)
                 .parseClaimsJws(token)
@@ -43,5 +45,23 @@ public class Token {
         Date expiration = claims.getExpiration();
         return expiration.before(new Date());
     }
+
+
+
+
+
+        public static SecretKey getSecretKey() {
+            return Keys.hmacShaKeyFor(JWT_KEY.getBytes(StandardCharsets.UTF_8));
+        }
+
+        public static String createToken(Customer customer, SecretKey key) {
+            return Jwts.builder()
+                    .setSubject(customer.getEmail())
+                    .signWith(key)
+                    .compact();
+        }
+
+
+
 
 }

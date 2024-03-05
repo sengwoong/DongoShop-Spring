@@ -46,5 +46,9 @@ public final class Customer {
     @OneToMany(mappedBy="customer",fetch=FetchType.LAZY)
     private Set<Authority> authorities;
 
+    @JsonIgnore
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private Point point;
+
 
 }

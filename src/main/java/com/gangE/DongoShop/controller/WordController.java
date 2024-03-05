@@ -33,12 +33,11 @@ public class WordController {
     }
 
 
-// todo  단어를 삭제 하기위해 product 에있는 관리자 유저가 요청유저인지 확인한다음 식제
     @DeleteMapping("delect/product/{productId}/word/{wordId}")
     public WordProduct DelectWordById(@PathVariable Long productId, @PathVariable Long wordId) {
         return wordService.DelectMyWord(productId,wordId);
     }
-    // todo  단어를 업데이트 하기위해 product 에있는 관리자 유저가 요청유저인지 확인한다음 업데이트
+
 
     @PostMapping("update/product/{productId}/word/{wordId}")
     public Optional<Word> UpdateWordById(@PathVariable Long productId, @PathVariable Long wordId, @RequestBody WordDto word) {
