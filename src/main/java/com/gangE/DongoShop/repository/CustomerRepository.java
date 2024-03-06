@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface CustomerRepository extends JpaRepository<Customer, Long> ,CurrentCustomerRepository{
+public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
     Customer findByEmail(String email);
 
@@ -21,6 +21,5 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> ,Curre
 
     @Query("SELECT c FROM Customer c LEFT JOIN FETCH c.authorities WHERE c.email = :email")
     Customer findByEmailWithAuthorities(@Param("email") String email);
-
 
 }

@@ -24,18 +24,15 @@ public class WordService   {
     private final WordRepository wordRepository;
     private final ProductRepository productRepository;
     private final WordProductRepository wordProductRepository;
-    private final CustomerRepository customerRepository;
-
-
+    private final CustomerService customerService;
     @Autowired
     public WordService(WordRepository wordRepository, WordProductRepository wordProductRepository,
-                       ProductRepository productRepository, CustomerRepository customerRepository
+                       ProductRepository productRepository, CustomerRepository customerRepository ,  CustomerService customerService
                         ) {
         this.wordRepository = wordRepository;
         this.wordProductRepository = wordProductRepository;
         this.productRepository = productRepository;
-        this.customerRepository = customerRepository;
-
+        this.customerService = customerService;
     }
 
     @Autowired
@@ -135,7 +132,7 @@ public class WordService   {
         }
 
         Product product = optionalProduct.get();
-        if (product.getProductCustomer() !=  customerRepository.getCurrentCustomer()) {
+        if (product.getProductCustomer() !=  customerService.getCurrentCustomer()) {
             throw new IllegalArgumentException("나의 포스트가 아닙니다.");
         }
 
@@ -159,7 +156,7 @@ public class WordService   {
         }
 
         Product product = optionalProduct.get();
-        if (product.getProductCustomer() !=  customerRepository.getCurrentCustomer()) {
+        if (product.getProductCustomer() !=  customerService.getCurrentCustomer()) {
             throw new IllegalArgumentException("나의 포스트가 아닙니다.");
         }
 

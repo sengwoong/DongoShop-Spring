@@ -18,17 +18,19 @@ public class AlarmService {
 
     private final AlarmRepository alarmRepository;
     private final CustomerRepository customerRepository;
+    private final CustomerService customerService;
 
     @Autowired
-    public AlarmService(AlarmRepository alarmRepository, CustomerRepository customerRepository) {
+    public AlarmService(AlarmRepository alarmRepository, CustomerRepository customerRepository,CustomerService customerService) {
         this.alarmRepository = alarmRepository;
         this.customerRepository = customerRepository;
+        this.customerService = customerService;
     }
 
 
 
     public Page<Alarm> findAllByOrderByUserIdCreatedAtDesc(Pageable pageable) {
-        return alarmRepository.findAllByUserIdOrderByCreatedAtDesc(pageable, customerRepository.getCurrentCustomer().getId());
+        return alarmRepository.findAllByUserIdOrderByCreatedAtDesc(pageable, customerService.getCurrentCustomer().getId());
     }
 
     public Optional<Alarm> createAlarm(int userId, Alarm alarm) {
@@ -41,35 +43,16 @@ public class AlarmService {
         alarm.setUser(customer);
         return Optional.of(alarmRepository.save(alarm));
     }
-    public Optional<Alarm> updateAlarm(int id, Alarm updatedAlarm) {
-        Optional<Alarm> existingAlarmOptional = alarmRepository.findById((long) id);
-        if (existingAlarmOptional.isEmpty()) {
-            return Optional.empty(); // 알람이 존재하지 않으면 빈 Optional 반환
-        }
 
-        Alarm existingAlarm = existingAlarmOptional.get();
-        Customer currentCustomer = customerRepository.getCurrentCustomer();
+    public void deleteAlarm(int alarmId) {
 
-        // 현재 사용자와 알람의 유저 ID가 다른 경우 에러 처리 또는 예외 처리
-        if (existingAlarm.getUser().getId() != currentCustomer.getId()) {
-            logger.error("Trying to update alarm belonging to another user");
-            return Optional.empty();
-        }
-
-        // 현재 사용자와 알람의 유저 ID가 같은 경우에만 업데이트
-        existingAlarm.setMessage(updatedAlarm.getMessage());
-        existingAlarm.setTime(updatedAlarm.getTime());
-        return Optional.of(alarmRepository.save(existingAlarm));
-    }
-    public void deleteAlarm(int id) {
-
-        Optional<Alarm> existingAlarmOptional = alarmRepository.findById((long) id);
+        Optional<Alarm> existingAlarmOptional = alarmRepository.findById((long) alarmId);
         if (existingAlarmOptional.isEmpty()) {
             return ;
         }
 
         Alarm existingAlarm = existingAlarmOptional.get();
-        Customer currentCustomer = customerRepository.getCurrentCustomer();
+        Customer currentCustomer = customerService.getCurrentCustomer();
 
 
 
@@ -79,7 +62,7 @@ public class AlarmService {
             return ;
         }
 
-        alarmRepository.deleteById((long) id);
+        alarmRepository.deleteById((long) alarmId);
     }
 
 

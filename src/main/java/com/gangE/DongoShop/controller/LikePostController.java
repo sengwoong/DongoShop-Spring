@@ -1,12 +1,14 @@
 package com.gangE.DongoShop.controller;
 
 import com.gangE.DongoShop.service.LikePostService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
+@Tag(name = "Like Controller", description = "문제")
 @RestController
 @RequestMapping("/like")
 public class LikePostController {
@@ -19,6 +21,7 @@ public class LikePostController {
     }
 
     // 해당 포스트의 좋아요 개수 조회
+    @Operation(summary = "count", description = "포스트의 아이디를 파라미터로 받고 포스트의 좋아요 총 개수를 얻습니다.")
     @GetMapping("/count/{postId}")
     public ResponseEntity<?> countLikePostByPostId(@PathVariable Long postId) {
         try {
@@ -29,7 +32,7 @@ public class LikePostController {
         }
     }
 
-    // 특정 사용자가 특정 포스트에 좋아요를 했는지 확인
+    @Operation(summary = "find", description = "포스트의 아이디를 파라미터로 받고 내가 포스트의 좋아요 를 하였는지 확인을 합니다.")
     @GetMapping("/find/{postId}")
     public ResponseEntity<?> findLikePostByUserIdAndPostId(@PathVariable Long postId) {
         try {
@@ -41,7 +44,8 @@ public class LikePostController {
     }
 
 
-    // 좋아요 생성
+
+    @Operation(summary = "create", description = "포스트의 아이디를 파라미터로 받고 내가 포스트의 좋아요 를 생성 합니다.")
     @PostMapping("/create/{postId}")
     public ResponseEntity<?> createLikePost(@PathVariable Long postId) {
         try {
@@ -52,7 +56,8 @@ public class LikePostController {
         }
     }
 
-    // 좋아요 삭제
+
+    @Operation(summary = "delect", description = "포스트의 아이디를 파라미터로 받고 내가 포스트의 좋아요 를 삭제 합니다.")
     @DeleteMapping("/delect/{postId}")
     public ResponseEntity<?> deleteLikePost(@PathVariable Long postId) {
         try {

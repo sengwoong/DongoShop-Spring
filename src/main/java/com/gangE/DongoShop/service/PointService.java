@@ -12,18 +12,17 @@ import org.springframework.stereotype.Service;
 public class PointService {
 
     private final PointRepository pointRepository;
-    private final CustomerRepository customerRepository;
-
+    private final CustomerService customerService;
     @Autowired
-    public PointService(PointRepository pointRepository, CustomerRepository customerRepository) {
+    public PointService(PointRepository pointRepository, CustomerRepository customerRepository,CustomerService customerService) {
         this.pointRepository = pointRepository;
-        this.customerRepository = customerRepository;
+        this.customerService = customerService;
     }
 
     // 현재 인증된 고객의 포인트 반환
     public Point getPointsByCustomerId() {
         // 현재 인증된 고객 가져오기
-        Customer customer =  customerRepository.getCurrentCustomer();
+        Customer customer =  customerService.getCurrentCustomer();
         if (customer != null) {
             // 해당 고객의 포인트 조회 및 반환
             return pointRepository.findByUser(customer);

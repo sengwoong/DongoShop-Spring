@@ -21,13 +21,13 @@ public class LikePostService {
     private final LikeRepository likeRepository;
 
     private final PostRepository postRepository;
-    private final CustomerRepository customerRepository;
+    private final CustomerService customerService;
 
     @Autowired
-    public LikePostService(LikeRepository likeRepository, CustomerRepository customerRepository, PostRepository postRepository) {
+    public LikePostService(LikeRepository likeRepository, CustomerRepository customerRepository, PostRepository postRepository, CustomerService customerService) {
         this.likeRepository = likeRepository;
-        this.customerRepository = customerRepository;
         this.postRepository = postRepository;
+        this.customerService = customerService;
     }
 
     // 해당 포스트의 좋아요 개수 조회
@@ -38,7 +38,7 @@ public class LikePostService {
     // 특정 사용자가 특정 포스트에 대한 좋아요를 했는지 확인
     public String findLikePostByUserIdAndPostId(Long postId) {
 
-        Customer customer =  customerRepository.getCurrentCustomer();
+        Customer customer =  customerService.getCurrentCustomer();
 
         Optional<Post> postOptional = postRepository.findById(postId);
 
@@ -61,7 +61,7 @@ public class LikePostService {
     // 좋아요 생성
     public String createLikePost(long postId) {
 
-        Customer customer =  customerRepository.getCurrentCustomer();
+        Customer customer =  customerService.getCurrentCustomer();
         Optional<Post> postOptional = postRepository.findById(postId);
 
         if (postOptional.isEmpty()) {
@@ -84,7 +84,7 @@ public class LikePostService {
     //todo 포스트가 없어도 되야하니 수정해야 합니다.
     public String deleteLikePostByUserIdAndPostId(Long postId) {
 
-        Customer customer =  customerRepository.getCurrentCustomer();
+        Customer customer =  customerService.getCurrentCustomer();
 
         Optional<Post> postOptional = postRepository.findById(postId);
 

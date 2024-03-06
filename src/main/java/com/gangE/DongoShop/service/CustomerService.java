@@ -1,12 +1,13 @@
 package com.gangE.DongoShop.service;
 
 import com.gangE.DongoShop.model.Customer;
-import com.gangE.DongoShop.repository.CurrentCustomerRepository;
 import com.gangE.DongoShop.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
 
-public class CustomerService implements CurrentCustomerRepository {
+@Service
+public class CustomerService {
 
 
     private final CustomerRepository customerRepository;

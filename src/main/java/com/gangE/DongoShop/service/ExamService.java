@@ -25,18 +25,15 @@ public class ExamService {
     private final ExamRepository ExamRepository;
     private final ProductRepository productRepository;
     private final ExamProductRepository ExamProductRepository;
-    private final CustomerRepository customerRepository;
-
+    private final CustomerService customerService;
 
     @Autowired
-    public ExamService(ExamRepository ExamRepository, ExamProductRepository ExamProductRepository,
-                       ProductRepository productRepository, CustomerRepository customerRepository
+    public ExamService(ExamRepository ExamRepository, ExamProductRepository ExamProductRepository, ProductRepository productRepository, CustomerRepository customerRepository,CustomerService customerService
                         ) {
         this.ExamRepository = ExamRepository;
         this.ExamProductRepository = ExamProductRepository;
         this.productRepository = productRepository;
-        this.customerRepository = customerRepository;
-
+        this.customerService = customerService;
     }
 
     @Autowired
@@ -136,7 +133,7 @@ public class ExamService {
         }
 
         Product product = optionalProduct.get();
-        if (product.getProductCustomer() != customerRepository.getCurrentCustomer()) {
+        if (product.getProductCustomer() != customerService.getCurrentCustomer()) {
             throw new IllegalArgumentException("나의 포스트가 아닙니다.");
         }
 
@@ -160,7 +157,7 @@ public class ExamService {
         }
 
         Product product = optionalProduct.get();
-        if (product.getProductCustomer() != customerRepository.getCurrentCustomer()) {
+        if (product.getProductCustomer() != customerService.getCurrentCustomer()) {
 
             throw new IllegalArgumentException("나의 포스트가 아닙니다.");
         }

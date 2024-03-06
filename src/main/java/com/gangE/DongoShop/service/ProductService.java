@@ -16,20 +16,13 @@ import java.util.Optional;
 @Service
 public class ProductService {
 
-
-    private final CustomerRepository customerRepository;
     private final ProductRepository productRepository;
-
+    private final CustomerService customerService;
     @Autowired
-    public ProductService(CommentPostRepository commentRepository, CustomerRepository customerRepository, ProductRepository productRepository) {
-        this.customerRepository = customerRepository;
+    public ProductService(CustomerService customerService, ProductRepository productRepository) {
         this.productRepository = productRepository;
+        this.customerService = customerService;
     }
-
-
-
-
-
 
     // 전체 프로덕트 가져오기
     @Transactional(readOnly = true)
@@ -40,27 +33,22 @@ public class ProductService {
     // 프로덕트 검색 (프로덕트 아이디)
     @Transactional(readOnly = true)
     public Optional<Product> getProductById(Long productId) {
-
-
         return productRepository.findById(productId);
     }
 
 
-
     @Transactional
     public Product addNewProduct(Product product) {
-        Customer customer = customerRepository.getCurrentCustomer();
+        Customer customer = customerService.getCurrentCustomer();
         product.setProductCustomer(customer); // 현재 고객을 제품에 할당
         return productRepository.save(product); // 제품 저장 후 반환
     }
-
-
 
     // 프로덕트 삭제
     @Transactional
     public void deleteProduct(Long productId) {
         // 현재 고객 가져오기
-        Customer customer =  customerRepository.getCurrentCustomer();
+        Customer customer =  customerService.getCurrentCustomer();
 
         // 주어진 productId로 제품 가져오기
         Optional<Product> productOptional = productRepository.findById(productId);
@@ -104,10 +92,12 @@ public class ProductService {
 //        productRepository.save(productToUpdate);
 //    }
 
+
+    // 다이나믹 업데이트 이전 로직
     @Transactional
     public void updateProduct(Long productId, Product updatedProduct) {
         // 현재 고객 가져오기
-        Customer customer =  customerRepository.getCurrentCustomer();
+        Customer customer =  customerService.getCurrentCustomer();
 
         // 주어진 productId로 제품 가져오기
         Optional<Product> productOptional = productRepository.findById(productId);

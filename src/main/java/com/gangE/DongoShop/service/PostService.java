@@ -16,12 +16,12 @@ import java.util.Optional;
 public class PostService {
 
     private final PostRepository postRepository;
-    private final CustomerRepository customerRepository;
+    private final CustomerService customerService;
 
     @Autowired
-    public PostService(PostRepository postRepository, CustomerRepository customerRepository) {
+    public PostService(PostRepository postRepository, CustomerService customerService) {
         this.postRepository = postRepository;
-        this.customerRepository = customerRepository;
+        this.customerService = customerService;
     }
 
     public Page<Post> getAllPosts(Pageable pageable) {
@@ -33,7 +33,7 @@ public class PostService {
     }
 
     public Post createPartialPost(PostDto postDto) {
-        Customer customer =  customerRepository.getCurrentCustomer();
+        Customer customer =  customerService.getCurrentCustomer();
         if (customer == null) {
             return null; // or throw an exception
         }
@@ -47,7 +47,7 @@ public class PostService {
     }
 
     public Optional<Post> updatePartialPost(Long postId, PostDto postDto) {
-        Customer customer = customerRepository.getCurrentCustomer();
+        Customer customer = customerService.getCurrentCustomer();
         if (customer == null) {
             return Optional.empty();
         }
@@ -67,7 +67,7 @@ public class PostService {
     }
 
     public boolean deletePartialPost(Long postId) {
-        Customer customer =  customerRepository.getCurrentCustomer();
+        Customer customer =  customerService.getCurrentCustomer();
         if (customer == null) {
             return false;
         }
