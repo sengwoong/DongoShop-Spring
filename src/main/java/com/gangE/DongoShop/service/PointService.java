@@ -24,7 +24,7 @@ public class PointService {
     // 현재 인증된 고객의 포인트 반환
     public Point getPointsByCustomerId() {
         // 현재 인증된 고객 가져오기
-        Customer customer = getAuthenticatedCustomer();
+        Customer customer =  customerRepository.getCurrentCustomer();
         if (customer != null) {
             // 해당 고객의 포인트 조회 및 반환
             return pointRepository.findByUser(customer);
@@ -68,8 +68,5 @@ public class PointService {
     }
 
     // 현재 인증된 사용자 정보 가져오기
-    private Customer getAuthenticatedCustomer() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return customerRepository.findByName(username);
-    }
+
 }

@@ -43,7 +43,7 @@ public class UserScheduleService {
 
         // 유저 스케줄 생성
         UserSchedule userSchedule = new UserSchedule();
-        userSchedule.setUser(getCurrentCustomer());
+        userSchedule.setUser( customerRepository.getCurrentCustomer());
         userSchedule.setSchedule(createdSchedule);
         userScheduleRepository.save(userSchedule);
 
@@ -52,7 +52,7 @@ public class UserScheduleService {
 
     public Schedule updateSchedule(int id, Schedule newScheduleData) {
         // 해당 스케줄이 유저의 것인지 확인
-        UserSchedule userSchedule = userScheduleRepository.findByScheduleIdAndUserId(id, getCurrentCustomer().getId());
+        UserSchedule userSchedule = userScheduleRepository.findByScheduleIdAndUserId(id,  customerRepository.getCurrentCustomer().getId());
         if (userSchedule == null) {
             throw new IllegalArgumentException("User does not have permission to update this schedule");
         }
@@ -73,7 +73,7 @@ public class UserScheduleService {
 
     public void deleteSchedule(int id) {
         // 해당 스케줄이 유저의 것인지 확인
-        UserSchedule userSchedule = userScheduleRepository.findByScheduleIdAndUserId(id, getCurrentCustomer().getId());
+        UserSchedule userSchedule = userScheduleRepository.findByScheduleIdAndUserId(id,  customerRepository.getCurrentCustomer().getId());
         if (userSchedule == null) {
             throw new IllegalArgumentException("User does not have permission to delete this schedule");
         }
@@ -94,9 +94,6 @@ public class UserScheduleService {
                 .getResultList();
     }
 
-    private Customer getCurrentCustomer() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return customerRepository.findByName(username);
-    }
+
 
 }

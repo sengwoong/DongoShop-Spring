@@ -34,7 +34,7 @@ public class CommentService {
      */
     @Transactional
     public void createNewComment(Long postId, String commentText, Long toUser) {
-        Customer customer = getCurrentCustomer();
+        Customer customer = customerRepository.getCurrentCustomer();
 
         // 대상 사용자가 있는 경우 대상 사용자 정보 가져오기
         Customer targetUser = (toUser != null) ? customerRepository.findById(toUser).orElse(null) : null;
@@ -62,7 +62,7 @@ public class CommentService {
      */
     @Transactional
     public void deleteCommentsByPostId(Long postId, long commentId) {
-        Customer customer = getCurrentCustomer();
+        Customer customer = customerRepository.getCurrentCustomer();
 
         Optional<CommentPost> commentOptional = commentRepository.findById(commentId);
         CommentPost comment = commentOptional.orElse(null);
@@ -77,7 +77,7 @@ public class CommentService {
      */
     @Transactional
     public void updateComment(Long commentId, String newContent, Long toUser) {
-        Customer customer = getCurrentCustomer();
+        Customer customer = customerRepository.getCurrentCustomer();
 
         Optional<CommentPost> commentOptional = commentRepository.findById(commentId);
         CommentPost comment = commentOptional.orElse(null);
@@ -98,8 +98,5 @@ public class CommentService {
     /**
      * 현재 인증된 사용자 정보 가져오기
      */
-    private Customer getCurrentCustomer() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return customerRepository.findByName(username);
-    }
+
 }

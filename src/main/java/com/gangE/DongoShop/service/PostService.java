@@ -34,7 +34,7 @@ public class PostService {
     }
 
     public Post createPartialPost(PostDto postDto) {
-        Customer customer = getAuthenticatedCustomer();
+        Customer customer =  customerRepository.getCurrentCustomer();
         if (customer == null) {
             return null; // or throw an exception
         }
@@ -48,7 +48,7 @@ public class PostService {
     }
 
     public Optional<Post> updatePartialPost(Long postId, PostDto postDto) {
-        Customer customer = getAuthenticatedCustomer();
+        Customer customer = customerRepository.getCurrentCustomer();
         if (customer == null) {
             return Optional.empty();
         }
@@ -68,7 +68,7 @@ public class PostService {
     }
 
     public boolean deletePartialPost(Long postId) {
-        Customer customer = getAuthenticatedCustomer();
+        Customer customer =  customerRepository.getCurrentCustomer();
         if (customer == null) {
             return false;
         }
@@ -87,10 +87,7 @@ public class PostService {
         return true;
     }
 
-    private Customer getAuthenticatedCustomer() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return customerRepository.findByName(username);
-    }
+
 
 
 }

@@ -45,10 +45,7 @@ public class ExamService {
     private JPAQueryFactory queryFactory;
 
 
-    public Customer getMyCurrentCustomer() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return customerRepository.findByName(username);
-    }
+
     // 저장할때 프로덕트와 연결한 ExamProduct를 넣어야한다
 
     @Transactional
@@ -141,7 +138,7 @@ public class ExamService {
         }
 
         Product product = optionalProduct.get();
-        if (product.getProductCustomer() != getMyCurrentCustomer()) {
+        if (product.getProductCustomer() != customerRepository.getCurrentCustomer()) {
             throw new IllegalArgumentException("나의 포스트가 아닙니다.");
         }
 
@@ -165,11 +162,8 @@ public class ExamService {
         }
 
         Product product = optionalProduct.get();
-        if (product.getProductCustomer() != getMyCurrentCustomer()) {
-            System.out.println(getMyCurrentCustomer());
-            System.out.println(product.getProductCustomer() );
-            System.out.println(product.getProductCustomer() != getMyCurrentCustomer());
-            System.out.println(product.getProductCustomer() != getMyCurrentCustomer());
+        if (product.getProductCustomer() != customerRepository.getCurrentCustomer()) {
+
             throw new IllegalArgumentException("나의 포스트가 아닙니다.");
         }
 

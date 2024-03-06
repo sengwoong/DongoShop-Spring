@@ -3,6 +3,7 @@ package com.gangE.DongoShop.service;
 import com.gangE.DongoShop.model.Alarm;
 import com.gangE.DongoShop.model.Customer;
 import com.gangE.DongoShop.repository.AlarmRepository;
+import com.gangE.DongoShop.repository.CurrentCustomerRepository;
 import com.gangE.DongoShop.repository.CustomerRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +33,7 @@ public class AlarmService {
 
 
     public Page<Alarm> findAllByOrderByUserIdCreatedAtDesc(Pageable pageable) {
-        return alarmRepository.findAllByUserIdOrderByCreatedAtDesc(pageable, getCurrentCustomer().getId());
+        return alarmRepository.findAllByUserIdOrderByCreatedAtDesc(pageable, customerRepository.getCurrentCustomer().getId());
     }
 
     public Optional<Alarm> createAlarm(int userId, Alarm alarm) {
@@ -52,7 +53,7 @@ public class AlarmService {
         }
 
         Alarm existingAlarm = existingAlarmOptional.get();
-        Customer currentCustomer = getCurrentCustomer();
+        Customer currentCustomer = customerRepository.getCurrentCustomer();
 
         // 현재 사용자와 알람의 유저 ID가 다른 경우 에러 처리 또는 예외 처리
         if (existingAlarm.getUser().getId() != currentCustomer.getId()) {
@@ -73,7 +74,7 @@ public class AlarmService {
         }
 
         Alarm existingAlarm = existingAlarmOptional.get();
-        Customer currentCustomer = getCurrentCustomer();
+        Customer currentCustomer = customerRepository.getCurrentCustomer();
 
 
 
@@ -86,8 +87,5 @@ public class AlarmService {
         alarmRepository.deleteById((long) id);
     }
 
-    private Customer getCurrentCustomer() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return customerRepository.findByName(username);
-    }
+
 }

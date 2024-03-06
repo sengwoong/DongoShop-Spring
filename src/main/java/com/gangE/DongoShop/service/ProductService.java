@@ -32,10 +32,7 @@ public class ProductService {
 
 
 
-    private Customer getCurrentCustomer() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return customerRepository.findByName(username);
-    }
+
 
 
     // 전체 프로덕트 가져오기
@@ -56,7 +53,7 @@ public class ProductService {
 
     @Transactional
     public Product addNewProduct(Product product) {
-        Customer customer = getCurrentCustomer();
+        Customer customer = customerRepository.getCurrentCustomer();
         product.setProductCustomer(customer); // 현재 고객을 제품에 할당
         return productRepository.save(product); // 제품 저장 후 반환
     }
@@ -67,7 +64,7 @@ public class ProductService {
     @Transactional
     public void deleteProduct(Long productId) {
         // 현재 고객 가져오기
-        Customer customer = getCurrentCustomer();
+        Customer customer =  customerRepository.getCurrentCustomer();
 
         // 주어진 productId로 제품 가져오기
         Optional<Product> productOptional = productRepository.findById(productId);
@@ -114,7 +111,7 @@ public class ProductService {
     @Transactional
     public void updateProduct(Long productId, Product updatedProduct) {
         // 현재 고객 가져오기
-        Customer customer = getCurrentCustomer();
+        Customer customer =  customerRepository.getCurrentCustomer();
 
         // 주어진 productId로 제품 가져오기
         Optional<Product> productOptional = productRepository.findById(productId);
