@@ -3,7 +3,6 @@ package com.gangE.DongoShop.service;
 
 import com.gangE.DongoShop.dto.QDto.ProductIdAndExamDto;
 import com.gangE.DongoShop.dto.ExamDto;
-import com.gangE.DongoShop.model.Customer;
 import com.gangE.DongoShop.model.Product;
 import com.gangE.DongoShop.model.Exam;
 import com.gangE.DongoShop.model.ExamProduct;
@@ -14,7 +13,6 @@ import com.gangE.DongoShop.repository.ExamRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

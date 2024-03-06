@@ -1,8 +1,7 @@
 package com.gangE.DongoShop.repository;
 
 
-import com.gangE.DongoShop.model.Customer;
-import com.gangE.DongoShop.model.Post;
+
 import com.gangE.DongoShop.model.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

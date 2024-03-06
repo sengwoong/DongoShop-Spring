@@ -1,6 +1,5 @@
 package com.gangE.DongoShop.service;
 
-import com.gangE.DongoShop.model.Customer;
 import com.gangE.DongoShop.model.Schedule;
 import com.gangE.DongoShop.model.UserSchedule;
 import com.gangE.DongoShop.repository.CustomerRepository;

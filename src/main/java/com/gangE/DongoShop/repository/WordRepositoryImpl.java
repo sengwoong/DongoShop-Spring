@@ -3,15 +3,12 @@ package com.gangE.DongoShop.repository;
 
 import com.gangE.DongoShop.dto.QDto.ProductIdAndWordDto;
 import com.gangE.DongoShop.model.Product;
-
-import com.gangE.DongoShop.model.Word;
 import com.gangE.DongoShop.model.WordProduct;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
-import org.springframework.context.annotation.Primary;
-import org.springframework.stereotype.Repository;
+
 
 import java.util.List;
 

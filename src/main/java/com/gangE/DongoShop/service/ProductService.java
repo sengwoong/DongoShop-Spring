@@ -1,15 +1,11 @@
 package com.gangE.DongoShop.service;
 
-import com.gangE.DongoShop.model.CommentPost;
 import com.gangE.DongoShop.model.Customer;
-import com.gangE.DongoShop.model.Post;
 import com.gangE.DongoShop.model.Product;
 import com.gangE.DongoShop.repository.CommentPostRepository;
 import com.gangE.DongoShop.repository.CustomerRepository;
-import com.gangE.DongoShop.repository.PostRepository;
 import com.gangE.DongoShop.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

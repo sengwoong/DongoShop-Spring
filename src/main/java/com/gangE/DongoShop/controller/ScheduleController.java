@@ -1,7 +1,6 @@
 package com.gangE.DongoShop.controller;
 
 import com.gangE.DongoShop.model.Schedule;
-import com.gangE.DongoShop.model.UserSchedule;
 import com.gangE.DongoShop.service.UserScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

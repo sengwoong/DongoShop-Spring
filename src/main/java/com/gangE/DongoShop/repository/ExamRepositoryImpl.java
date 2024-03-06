@@ -13,7 +13,6 @@ import java.util.List;
 
 import static com.gangE.DongoShop.model.QExam.exam;
 import static com.gangE.DongoShop.model.QExamProduct.examProduct;
-import static com.gangE.DongoShop.model.QWordProduct.wordProduct;
 import static org.springframework.util.StringUtils.isEmpty;
 
 

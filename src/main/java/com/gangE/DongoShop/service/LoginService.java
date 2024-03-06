@@ -8,19 +8,14 @@ import com.gangE.DongoShop.repository.CustomerRepository;
 import com.gangE.DongoShop.repository.PointRepository;
 import io.jsonwebtoken.security.Keys;
 import jakarta.transaction.Transactional;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.sql.Date;
-import java.util.logging.Logger;
 
 import static com.gangE.DongoShop.util.Token.CreateToekn;
 

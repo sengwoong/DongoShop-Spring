@@ -2,7 +2,6 @@ package com.gangE.DongoShop.controller;
 
 import com.gangE.DongoShop.dto.CommentPostDto;
 import com.gangE.DongoShop.model.CommentPost;
-import com.gangE.DongoShop.repository.CommentPostRepository;
 import com.gangE.DongoShop.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
