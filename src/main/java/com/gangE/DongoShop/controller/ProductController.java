@@ -5,6 +5,8 @@ import com.gangE.DongoShop.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,12 +26,20 @@ public class ProductController {
     }
 
     // 페이지 네이션 적용
-    @Operation(summary = "select_all paging", description = "모든 제품을 들고 옵나다")
-    @GetMapping("select_all")
-    public ResponseEntity<List<Product>> getAllProducts() {
-        List<Product> products = productService.getAllProducts();
+    @Operation(summary = "select_all paging", description = "나의 모든 제품을 들고 옵나다")
+    @GetMapping("select_my_all")
+    public ResponseEntity<Page<Product>> GetAllMyProduct(Pageable pageable) {
+        Page<Product> products = productService.GetAllMyProduct(pageable);
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
+
+    @Operation(summary = "select_visible_all paging", description = "나의 모든 제품을 들고 옵나다")
+    @GetMapping("select_visible_all")
+    public ResponseEntity<Page<Product>> GetVisibleMyProduct(Pageable pageable) {
+        Page<Product> products = productService.GetVisibleProduct(pageable);
+        return new ResponseEntity<>(products, HttpStatus.OK);
+    }
+
 
     @Operation(summary = "select", description = "특정 제품 하나를 가져옵니다.")
     @GetMapping("select/{productId}")

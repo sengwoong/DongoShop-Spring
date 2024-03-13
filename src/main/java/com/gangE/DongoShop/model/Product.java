@@ -22,6 +22,7 @@ public class Product {
     private int id;
     private String title;
     private String content;
+    private Boolean visible;
     private String type;
     private int downloadCount;
     private int price;
@@ -31,7 +32,7 @@ public class Product {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")
-    private Customer ProductCustomer;
+    private Customer  user;
 
 
     @JsonIgnore

@@ -2,6 +2,8 @@ package com.gangE.DongoShop.service;
 
 
 import com.gangE.DongoShop.constants.SecurityConstants;
+import com.gangE.DongoShop.dto.EmailAndPwd;
+import com.gangE.DongoShop.dto.UserToken;
 import com.gangE.DongoShop.model.Customer;
 import com.gangE.DongoShop.model.Point;
 import com.gangE.DongoShop.repository.CustomerRepository;
@@ -9,8 +11,6 @@ import com.gangE.DongoShop.repository.PointRepository;
 import io.jsonwebtoken.security.Keys;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import javax.crypto.SecretKey;
@@ -28,6 +28,7 @@ public class LoginService {
     private final PointRepository pointRepository;
     private final PasswordEncoder passwordEncoder;
 
+
     @Autowired
     public LoginService(CustomerRepository customerRepository, PasswordEncoder passwordEncoder,PointRepository pointRepository) {
         this.customerRepository = customerRepository;
@@ -36,13 +37,13 @@ public class LoginService {
     }
 
 
-    public String loginUser(Customer authentication) {
+    public UserToken loginUser(EmailAndPwd authentication) {
         Customer customer = customerRepository.findByEmailWithAuthorities(authentication.getEmail());
 
         if (customer != null && passwordEncoder.matches(authentication.getPwd(),customer.getPwd())) {
             SecretKey key = Keys.hmacShaKeyFor(SecurityConstants.JWT_KEY.getBytes(StandardCharsets.UTF_8));
             String jwt = CreateToekn(customer, key);
-            return jwt;
+            return new UserToken((long)customer.getId(), jwt);
 
         }
         return null;
@@ -51,9 +52,14 @@ public class LoginService {
 
 
 
-    public ResponseEntity<String> registerUser(Customer customer) {
-        Customer savedCustomer = null;
-        ResponseEntity response = null;
+    public UserToken registerUser(Customer customer) {
+        Customer isDuplication = customerRepository.findByName(customer.getName());
+        if(isDuplication != null){
+            return null;
+        }
+        EmailAndPwd authentication = new EmailAndPwd(customer.getEmail(), customer.getPwd());
+
+
         Point point = new Point();
         try {
             String hashPwd = passwordEncoder.encode(customer.getPwd());
@@ -64,22 +70,20 @@ public class LoginService {
             point.setUser(customer);
             point.setPoint(0); // 초기 포인트를 0으로 설정
             pointRepository.save(point);
-
-            response = ResponseEntity
-                    .status(HttpStatus.CREATED)
-                    .body("Given user details are successfully registered");
+            UserToken token = loginUser(authentication);
+           return token;
 
         } catch (Exception ex) {
-            response = ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("An exception occured due to " + ex.getMessage());
+
         }
 
 
 
 
-        return response;
+        return null;
     }
+
+
 
 
 }

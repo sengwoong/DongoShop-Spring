@@ -1,12 +1,13 @@
 package com.gangE.DongoShop.controller;
 
 
+import com.gangE.DongoShop.dto.EmailAndPwd;
+import com.gangE.DongoShop.dto.UserToken;
 import com.gangE.DongoShop.model.Customer;
 import com.gangE.DongoShop.service.LoginService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = " Login Controller", description = "로그인")
@@ -21,8 +22,8 @@ public class LoginController {
         this.loginService = loginService;
     }
     @Operation(summary = "login", description = "로그인 토큰을 받습니다.")
-    @GetMapping("/login")
-    public String loginUser(@RequestBody Customer authentication) {
+    @PostMapping("/login")
+    public UserToken loginUser(@RequestBody EmailAndPwd authentication) {
         return loginService.loginUser(authentication);
     }
     @Operation(summary = "register",
@@ -32,9 +33,9 @@ public class LoginController {
                     "이때 email은 중복일 수가 없습니다."
     )
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody Customer customer) {
+    public UserToken registerUser(@RequestBody Customer customer) {
 
-        ResponseEntity<String> success = loginService.registerUser(customer);
+        UserToken success = loginService.registerUser(customer);
       return success;
     }
 

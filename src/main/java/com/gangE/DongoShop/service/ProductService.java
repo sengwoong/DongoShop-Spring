@@ -2,14 +2,15 @@ package com.gangE.DongoShop.service;
 
 import com.gangE.DongoShop.model.Customer;
 import com.gangE.DongoShop.model.Product;
-import com.gangE.DongoShop.repository.CommentPostRepository;
-import com.gangE.DongoShop.repository.CustomerRepository;
 import com.gangE.DongoShop.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -23,8 +24,20 @@ public class ProductService {
         this.productRepository = productRepository;
         this.customerService = customerService;
     }
+    @Transactional(readOnly = true)
+    public Page<Product> GetAllMyProduct(Pageable pageable) {
+        // 현재 로그인한 사용자 정보 가져오기
+        Customer customer = customerService.getCurrentCustomer();
+        return productRepository.findByUser(customer, pageable);
+    }
 
-    // 전체 프로덕트 가져오기
+    @Transactional(readOnly = true)
+    public Page<Product> GetVisibleProduct(Pageable pageable) {
+        // visible 필드가 true인 프로덕트만 가져오기
+        return productRepository.findByVisible(true, pageable);
+    }
+
+
     @Transactional(readOnly = true)
     public List<Product> getAllProducts() {
         return productRepository.findAll();
@@ -40,7 +53,11 @@ public class ProductService {
     @Transactional
     public Product addNewProduct(Product product) {
         Customer customer = customerService.getCurrentCustomer();
-        product.setProductCustomer(customer); // 현재 고객을 제품에 할당
+        product.setVisible(false);
+        // 유저아이디에 값넣기 변경
+        product.setUser(customer); // 현재 고객을 제품에 할당
+        System.out.println("product");
+        System.out.println(product);
         return productRepository.save(product); // 제품 저장 후 반환
     }
 
@@ -54,7 +71,7 @@ public class ProductService {
         Optional<Product> productOptional = productRepository.findById(productId);
 
         // 제품이 존재하지 않는 경우 또는 해당 제품이 현재 고객이 만든 제품이 아닌 경우
-        if (productOptional.isEmpty() || !(productOptional.get().getProductCustomer() == customer)) {
+        if (productOptional.isEmpty() || !(productOptional.get().getUser() == customer)) {
             // 삭제할 수 없음
             return;
         }
@@ -62,7 +79,7 @@ public class ProductService {
         // 제품 삭제
         productRepository.delete(productOptional.get());
     }
-
+// 강의 내용으로 사용하여 주석으로 남겨둡니다 아래와 비교하여 사용할수 있습니다.
 
 //    @Transactional
 //    public void updateProduct(Long productId, Product updatedProduct) {
@@ -103,7 +120,7 @@ public class ProductService {
         Optional<Product> productOptional = productRepository.findById(productId);
 
         // 제품이 존재하지 않는 경우 또는 해당 제품이 현재 고객이 만든 제품이 아닌 경우
-        if (productOptional.isEmpty() || !(productOptional.get().getProductCustomer() == customer)) {
+        if (productOptional.isEmpty() || !(productOptional.get().getUser() == customer)) {
             // 업데이트할 수 없음
             return;
         }

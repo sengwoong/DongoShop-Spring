@@ -27,7 +27,7 @@ public class ScheduleController {
     public Schedule createSchedule(@RequestBody Schedule schedule) {
         return userScheduleService.createSchedule(schedule);
     }
-    @Operation(summary = "create", description = "스케줄 아이디를 파람으로 받으며 나의 스케줄을 업데이트 합니다.")
+    @Operation(summary = "update", description = "스케줄 아이디를 파람으로 받으며 나의 스케줄을 업데이트 합니다.")
     @PutMapping("/update/{schedule_id}")
     public Schedule updateSchedule(@PathVariable int schedule_id, @RequestBody Schedule schedule) {
         return userScheduleService.updateSchedule(schedule_id, schedule);

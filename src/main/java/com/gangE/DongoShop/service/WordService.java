@@ -132,7 +132,7 @@ public class WordService   {
         }
 
         Product product = optionalProduct.get();
-        if (product.getProductCustomer() !=  customerService.getCurrentCustomer()) {
+        if (product.getUser() !=  customerService.getCurrentCustomer()) {
             throw new IllegalArgumentException("나의 포스트가 아닙니다.");
         }
 
@@ -156,7 +156,7 @@ public class WordService   {
         }
 
         Product product = optionalProduct.get();
-        if (product.getProductCustomer() !=  customerService.getCurrentCustomer()) {
+        if (product.getUser() !=  customerService.getCurrentCustomer()) {
             throw new IllegalArgumentException("나의 포스트가 아닙니다.");
         }
 
