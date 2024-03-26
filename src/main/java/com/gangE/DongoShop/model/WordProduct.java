@@ -31,8 +31,8 @@ public class WordProduct {
     private Word word;
 
 
-
-
+    @JoinColumn(name = "word_local")
+    private int wordLocal;
 
 
 }

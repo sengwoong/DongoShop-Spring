@@ -38,10 +38,6 @@ public class ProductService {
     }
 
 
-    @Transactional(readOnly = true)
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
-    }
 
     // 프로덕트 검색 (프로덕트 아이디)
     @Transactional(readOnly = true)

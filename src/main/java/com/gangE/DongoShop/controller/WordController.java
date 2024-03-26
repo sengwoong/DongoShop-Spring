@@ -1,5 +1,6 @@
 package com.gangE.DongoShop.controller;
 
+import com.gangE.DongoShop.dto.PrevIdCurrnetId;
 import com.gangE.DongoShop.dto.QDto.ProductIdAndWordDto;
 import com.gangE.DongoShop.dto.WordDto;
 import com.gangE.DongoShop.model.Word;
@@ -42,5 +43,10 @@ public class WordController {
     }
 
 
+    @Operation(summary = "update", description = "해당 프로덕트와 단어를 파람으로 받으며 단어를 수정 합니다.")
+    @PostMapping("update/exchange/{productId}")
+    public void ExchangeWordByLocalId(@PathVariable int productId, @RequestBody PrevIdCurrnetId wordId) {
+        wordService.exchangeWordByLocalId(productId, wordId);
+    }
 
 }

@@ -25,20 +25,22 @@ public class WordRepositoryImpl implements WordRepositoryCustom {
     }
 
 
-    // 페이징 으로 바꾸기
+    // 페이징 으로 바꾸기?
     @Override
     public List<ProductIdAndWordDto> searchInAllWord(Product product) {
         List<ProductIdAndWordDto> words = queryFactory
                 .select(Projections.constructor(
                         ProductIdAndWordDto.class,
                         wordProduct.product.id,
-                        word1.id,
+                        wordProduct.word.id,
+                        wordProduct.wordLocal,
                         word1.word,
                         word1.definition
                 ))
                 .from(word1)
                 .innerJoin(word1.wordProduct, wordProduct)
                 .where(wordProduct.product.eq(product))
+                .orderBy(wordProduct.wordLocal.asc())
                 .fetch();
         return words;
     }
