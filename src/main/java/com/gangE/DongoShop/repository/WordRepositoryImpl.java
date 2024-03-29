@@ -32,7 +32,7 @@ public class WordRepositoryImpl implements WordRepositoryCustom {
                 .select(Projections.constructor(
                         ProductIdAndWordDto.class,
                         wordProduct.product.id,
-                        wordProduct.word.id,
+                        word1.id,
                         wordProduct.wordLocal,
                         word1.word,
                         word1.definition

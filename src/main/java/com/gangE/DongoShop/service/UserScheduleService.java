@@ -34,6 +34,7 @@ public class UserScheduleService {
         this.customerService =customerService;
     }
 
+
     @Transactional
     public Schedule createSchedule(Schedule schedule) {
         // 스케줄 생성
@@ -48,13 +49,13 @@ public class UserScheduleService {
         return createdSchedule;
     }
 
+
     public Schedule updateSchedule(int schedule_id, Schedule newScheduleData) {
         // 해당 스케줄이 유저의 것인지 확인
         UserSchedule userSchedule = userScheduleRepository.findByScheduleIdAndUserId(schedule_id,  customerService.getCurrentCustomer().getId());
         if (userSchedule == null) {
             throw new IllegalArgumentException("User does not have permission to update this schedule");
         }
-
         // 스케줄 업데이트
         Schedule updatedSchedule = scheduleRepository.findById(schedule_id)
                 .map(schedule -> {
@@ -81,9 +82,6 @@ public class UserScheduleService {
     }
 
 
-
-
-
     public List<Schedule> getAllMyScheduleByName() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return entityManager.createQuery(
@@ -91,7 +89,4 @@ public class UserScheduleService {
                 .setParameter("username", username)
                 .getResultList();
     }
-
-
-
 }

@@ -12,6 +12,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 
@@ -41,15 +42,19 @@ public class WordService   {
     private JPAQueryFactory queryFactory;
 
 
-
     private Product IsMyProduct(Long productId) {
         Optional<Product> optionalProduct = productRepository.findById(productId);
         if (optionalProduct.isEmpty()) {
             throw new IllegalArgumentException("해당 ID에 해당하는 제품이 없습니다.");
         }
 
+        Customer customer =  customerService.getCurrentCustomer();
+        if (customer == null) {
+            throw new IllegalArgumentException("유저가없습니다.");
+        }
+
         Product product = optionalProduct.get();
-        if (product.getUser() !=  customerService.getCurrentCustomer()) {
+        if (!product.getUser().equals(customer)) {
             throw new IllegalArgumentException("나의 포스트가 아닙니다.");
         }
         return product;
@@ -91,17 +96,9 @@ public class WordService   {
     }
 
 
-
-
-
-    // todo  단어를 업데이트 하기위해 product 에있는 관리자 유저가 요청유저인지 확인한다음 업데이트
-
     public WordProduct DelectMyWord(Long productId, Long wordId ) {
 
-        Product product =  IsMyProduct(productId);
-        if(product == null){
-            throw new IllegalArgumentException("해당 ID에 해당하는 제품이 없습니다.");
-        }
+
         // 전체 에서 해당 wordId 가 있는지 검색
         WordProduct MyWord= selectMyWordProduct(productId,wordId);
         // 해당 단어를삭제
@@ -110,7 +107,6 @@ public class WordService   {
 
         return MyWord;
     }
-
 
 
     public Optional<Word> UpdateMyWord(Long productId, Long wordId ,WordDto word) {
@@ -123,15 +119,11 @@ public class WordService   {
             throw new IllegalArgumentException("해당 ID에 해당하는 제품이 없습니다.");
         }
 
-
         MyWord.get().setWord(word.getWord());
         MyWord.get().setDefinition(word.getDefinition());
-
         // 엔티티가 자동업데이
         return MyWord;
     }
-
-
 
 
     @Transactional
@@ -144,8 +136,6 @@ public class WordService   {
         if(product == null){
             throw new IllegalArgumentException("해당 ID에 해당하는 제품이 없습니다.");
         }
-
-
         // 검색된 WordProduct가 null이 아닌 경우에만 로직을 진행
         if (prevWord != null && currentWord != null) {
             // prevWord와 currentWord를 서로 교환
@@ -158,9 +148,6 @@ public class WordService   {
             throw new EntityNotFoundException("WordProduct not found for productId: " + productId + " and wordId: " + wordLocal);
         }
     }
-
-
-
 
 
     public List<ProductIdAndWordDto> selectAllWord(Long productId ) {
@@ -221,12 +208,6 @@ public class WordService   {
 
         return  word;
     }
-
-
-
-
-
-
 }
 
 

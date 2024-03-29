@@ -24,6 +24,8 @@ public class ProductService {
         this.productRepository = productRepository;
         this.customerService = customerService;
     }
+
+
     @Transactional(readOnly = true)
     public Page<Product> GetAllMyProduct(Pageable pageable) {
         // 현재 로그인한 사용자 정보 가져오기
@@ -31,21 +33,18 @@ public class ProductService {
         return productRepository.findByUser(customer, pageable);
     }
 
+
     @Transactional(readOnly = true)
     public Page<Product> GetVisibleProduct(Pageable pageable) {
         // visible 필드가 true인 프로덕트만 가져오기
         return productRepository.findByVisible(true, pageable);
     }
 
-
-
     // 프로덕트 검색 (프로덕트 아이디)
     @Transactional(readOnly = true)
     public Optional<Product> getProductById(Long productId) {
         return productRepository.findById(productId);
     }
-
-
     @Transactional
     public Product addNewProduct(Product product) {
         Customer customer = customerService.getCurrentCustomer();
@@ -62,21 +61,23 @@ public class ProductService {
     public void deleteProduct(Long productId) {
         // 현재 고객 가져오기
         Customer customer =  customerService.getCurrentCustomer();
-
         // 주어진 productId로 제품 가져오기
         Optional<Product> productOptional = productRepository.findById(productId);
-
         // 제품이 존재하지 않는 경우 또는 해당 제품이 현재 고객이 만든 제품이 아닌 경우
         if (productOptional.isEmpty() || !(productOptional.get().getUser() == customer)) {
             // 삭제할 수 없음
             return;
         }
-
         // 제품 삭제
-        productRepository.delete(productOptional.get());
-    }
-// 강의 내용으로 사용하여 주석으로 남겨둡니다 아래와 비교하여 사용할수 있습니다.
+        try {
+            productRepository.delete(productOptional.get());
+        } catch (Exception e) {
+            System.out.println(e);
+        }
 
+    }
+
+// 강의 내용으로 사용하여 주석으로 남겨둡니다 아래와 비교하여 사용할수 있습니다.
 //    @Transactional
 //    public void updateProduct(Long productId, Product updatedProduct) {
 //        // 현재 고객 가져오기
@@ -111,19 +112,15 @@ public class ProductService {
     public void updateProduct(Long productId, Product updatedProduct) {
         // 현재 고객 가져오기
         Customer customer =  customerService.getCurrentCustomer();
-
         // 주어진 productId로 제품 가져오기
         Optional<Product> productOptional = productRepository.findById(productId);
-
         // 제품이 존재하지 않는 경우 또는 해당 제품이 현재 고객이 만든 제품이 아닌 경우
         if (productOptional.isEmpty() || !(productOptional.get().getUser() == customer)) {
             // 업데이트할 수 없음
             return;
         }
-
         // 업데이트할 제품 가져오기
         Product productToUpdate = productOptional.get();
-
         // 업데이트할 필드만 변경
         if (updatedProduct.getTitle() != null) {
             productToUpdate.setTitle(updatedProduct.getTitle());
@@ -131,16 +128,13 @@ public class ProductService {
         if (updatedProduct.getContent() != null) {
             productToUpdate.setContent(updatedProduct.getContent());
         }
-        if (updatedProduct.getType() != null) {
-            productToUpdate.setType(updatedProduct.getType());
-        }
+
         if (updatedProduct.getDownloadCount() != 0) {
             productToUpdate.setDownloadCount(updatedProduct.getDownloadCount());
         }
         if (updatedProduct.getPrice() != 0) {
             productToUpdate.setPrice(updatedProduct.getPrice());
         }
-
         // 업데이트된 제품 저장
         productRepository.save(productToUpdate);
     }

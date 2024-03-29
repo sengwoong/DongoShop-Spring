@@ -17,7 +17,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/word")
 public class WordController {
-
     @Autowired
     private WordService wordService;
     @Operation(summary = "select_all", description = "해당 프로덕트의 모든 단어를 검색합니다.")
@@ -35,18 +34,14 @@ public class WordController {
     public WordProduct DelectWordById(@PathVariable Long productId, @PathVariable Long wordId) {
         return wordService.DelectMyWord(productId,wordId);
     }
-
     @Operation(summary = "update", description = "해당 프로덕트와 단어를 파람으로 받으며 단어를 수정 합니다.")
     @PostMapping("update/product/{productId}/word/{wordId}")
     public Optional<Word> UpdateWordById(@PathVariable Long productId, @PathVariable Long wordId, @RequestBody WordDto word) {
         return wordService.UpdateMyWord(productId,wordId,word);
     }
-
-
     @Operation(summary = "update", description = "해당 프로덕트와 단어를 파람으로 받으며 단어를 수정 합니다.")
     @PostMapping("update/exchange/{productId}")
     public void ExchangeWordByLocalId(@PathVariable int productId, @RequestBody PrevIdCurrnetId wordId) {
         wordService.exchangeWordByLocalId(productId, wordId);
     }
-
 }

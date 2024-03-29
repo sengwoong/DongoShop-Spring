@@ -31,13 +31,15 @@ public class ExamRepositoryImpl implements ExamRepositoryCustom {
                         ProductIdAndExamDto.class,
                         examProduct.product.id,
                         exam.id,
+                        examProduct.examLocal,
                         exam.title,
                         exam.content
                 ))
                 .from(exam)
-                .innerJoin(exam.exam_product_id, examProduct)
+                .innerJoin(exam.examProduct, examProduct)
                 .where(examProduct.product.eq(product))
                 .fetch();
+
         return exams;
     }
 

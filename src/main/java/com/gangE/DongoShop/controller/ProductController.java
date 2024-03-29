@@ -25,7 +25,6 @@ public class ProductController {
         this.productService = productService;
     }
 
-    // 페이지 네이션 적용
     @Operation(summary = "select_all paging", description = "나의 모든 제품을 들고 옵나다")
     @GetMapping("select_my_all")
     public ResponseEntity<Page<Product>> GetAllMyProduct(Pageable pageable) {
@@ -40,7 +39,6 @@ public class ProductController {
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
-
     @Operation(summary = "select", description = "특정 제품 하나를 가져옵니다.")
     @GetMapping("select/{productId}")
     public ResponseEntity<Product> getProductById(@PathVariable Long productId) {
@@ -50,8 +48,6 @@ public class ProductController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-
-    // 새로운 제품 추가 엔드포인트
     @Operation(summary = "create", description = "제품을 만듭니다.")
     @PostMapping("/create")
     public ResponseEntity<Product> addNewProduct(@RequestBody Product product) {
@@ -59,7 +55,6 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(newProduct);
     }
 
-    // 제품 업데이트 엔드포인트
     @Operation(summary = "update", description = "프로덕트 아이디를 받으면 자신이만든 제품을 업데이트 합니다.")
     @PutMapping("/update/{productId}")
     public ResponseEntity<String> updateProduct(@PathVariable Long productId, @RequestBody Product updatedProduct) {
@@ -67,14 +62,10 @@ public class ProductController {
         return ResponseEntity.ok("Product updated successfully");
     }
 
-
-    // 제품 삭제 엔드포인트
     @Operation(summary = "delete", description = "프로덕트 아이디를 받으면 자신이만든 제품을 삭제 합니다.")
     @DeleteMapping("/delete/{productId}")
     public ResponseEntity<String> deleteProduct(@PathVariable Long productId) {
         productService.deleteProduct(productId);
         return ResponseEntity.ok("Product deleted successfully");
     }
-
-    // 기타 엔드포인트 추가 가능
 }

@@ -23,7 +23,6 @@ public class Product {
     private String title;
     private String content;
     private Boolean visible;
-    private String type;
     private int downloadCount;
     private int price;
 
@@ -36,14 +35,14 @@ public class Product {
 
 
     @JsonIgnore
-    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE , orphanRemoval = true)
     private List<PostProduct> products;
     @JsonIgnore
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE , orphanRemoval = true)
     private List<ExamProduct> examProducts;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE , orphanRemoval = true)
     private List<WordProduct> wordProducts;
 
     @PrePersist

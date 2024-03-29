@@ -18,16 +18,9 @@ public class Exam {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-//    @Lob
-//    private byte[] img;
-
     private String title;
     private String content;
 
-
-
-    @OneToMany(mappedBy = "exam")
-    private List<ExamProduct> exam_product_id;
-
-
+    @OneToOne(mappedBy = "exam", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private ExamProduct examProduct;
 }
