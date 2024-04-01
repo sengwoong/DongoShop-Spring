@@ -22,16 +22,16 @@ import java.util.Optional;
 @Service
 public class ExamService {
 
-    private final ExamRepository ExamRepository;
+    private final ExamRepository examRepository;
     private final ProductRepository productRepository;
-    private final ExamProductRepository ExamProductRepository;
+    private final ExamProductRepository examProductRepository;
     private final CustomerService customerService;
 
     @Autowired
-    public ExamService(ExamRepository ExamRepository, ExamProductRepository ExamProductRepository, ProductRepository productRepository, CustomerRepository customerRepository,CustomerService customerService
+    public ExamService(ExamRepository examRepository, ExamProductRepository examProductRepository, ProductRepository productRepository, CustomerRepository customerRepository,CustomerService customerService
                         ) {
-        this.ExamRepository = ExamRepository;
-        this.ExamProductRepository = ExamProductRepository;
+        this.examRepository = examRepository;
+        this.examProductRepository = examProductRepository;
         this.productRepository = productRepository;
         this.customerService = customerService;
     }
@@ -56,10 +56,10 @@ public class ExamService {
 
         Product product = optionalProduct.get();
         if (product.getUser() != customerService.getCurrentCustomer()) {
-            throw new IllegalArgumentException("나의 포스트가 아닙니다.");
+            throw new IllegalArgumentException("나의 프로덕트가 아닙니다.");
         }
 
-        ExamProduct ExamProducts =  ExamRepository.searchInProductExam(product,ExamId);
+        ExamProduct ExamProducts =  examRepository.searchInProductExam(product,ExamId);
 
         return  ExamProducts;
     }
@@ -104,7 +104,7 @@ public class ExamService {
             throw new IllegalArgumentException("나의 포스트가 아닙니다.");
         }
 
-        Optional<Exam> Exam =  ExamRepository.findById(ExamId);
+        Optional<Exam> Exam =  examRepository.findById(ExamId);
 
         if (Exam.isEmpty()) {
             throw new IllegalArgumentException("단어가 없습니다.");
@@ -128,7 +128,7 @@ public class ExamService {
         Exam newExam = new Exam();
         newExam.setTitle(ExamText);
         newExam.setContent(definition);
-        ExamRepository.save(newExam); // Save the new Exam
+        examRepository.save(newExam); // Save the new Exam
 
         // Retrieve the product
         Optional<Product> optionalProduct = productRepository.findById(productId);
@@ -141,33 +141,46 @@ public class ExamService {
         ExamProduct ExamProduct = new ExamProduct();
         ExamProduct.setProduct(product);
         ExamProduct.setExam(newExam); // 새단어 하나만 등
-        ExamProductRepository.save(ExamProduct); // 저장
-
+        ExamProduct.setExamLocal(findMaxExamLocalForProduct(product));// 해당 프로덕트의 setWordLocal 중 가장 큰값으로 반환
+        examProductRepository.save(ExamProduct); // 저장
         return newExam;
     }
+
+
+
+    private int findMaxExamLocalForProduct(Product product) {
+        Integer maxWordLocal = examProductRepository.findMaxExamLocalByProduct((long) product.getId());
+        return maxWordLocal == null ?  1: maxWordLocal + 1 ;
+    }
+
 
     @Transactional
     public void exchangeExamByLocalId(int productId, PrevIdCurrnetId wordLocal) {
         // 전체에서 해당 wordId가 있는지 검색
-        ExamProduct prevWord = ExamProductRepository.findByProductIdAndExamLocal(productId, wordLocal.getPrevId());
-        ExamProduct currentWord = ExamProductRepository.findByProductIdAndExamLocal(productId, wordLocal.getCurrentId());
-
+        ExamProduct prevExam = examProductRepository.findByProductIdAndExamLocal(productId, wordLocal.getPrevId());
+        ExamProduct currentExam = examProductRepository.findByProductIdAndExamLocal(productId, wordLocal.getCurrentId());
+        System.out.println("prevExam");
+        System.out.println(prevExam);
+        System.out.println("currentWord");
+        System.out.println(currentExam);
         Product product =  IsMyProduct((long)productId);
         if(product == null){
             throw new IllegalArgumentException("해당 ID에 해당하는 제품이 없습니다.");
         }
         // 검색된 WordProduct가 null이 아닌 경우에만 로직을 진행
-        if (prevWord != null && currentWord != null) {
+        if (prevExam != null && currentExam != null) {
             // prevWord와 currentWord를 서로 교환
-            String temp = String.valueOf(prevWord.getExamLocal());
-            prevWord.setExamLocal(currentWord.getExamLocal());
-            currentWord.setExamLocal(Integer.parseInt(temp));
+            String temp = String.valueOf(prevExam.getExamLocal());
+            prevExam.setExamLocal(currentExam.getExamLocal());
+            currentExam.setExamLocal(Integer.parseInt(temp));
         } else {
             // 예외 처리 또는 로그 등의 추가 작업을 수행할 수 있음
             // 예를 들어, WordProduct가 찾아지지 않을 때 로그를 출력하거나 예외를 던질 수 있음
             throw new EntityNotFoundException("WordProduct not found for productId: " + productId + " and wordId: " + wordLocal);
         }
     }
+
+
 
 
 
@@ -184,9 +197,7 @@ public class ExamService {
         if (!myExam.isPresent()) {
           return;
         }
-        ExamRepository.delete(myExam.get());
-
-
+        examRepository.delete(myExam.get());
     }
 
 
@@ -227,14 +238,10 @@ public class ExamService {
         }
 
         Product product = optionalProduct.get();
-        List<ProductIdAndExamDto> Exams =  ExamRepository.searchInAllExam(product);
+        List<ProductIdAndExamDto> Exams =  examRepository.searchInAllExam(product);
 
         return  Exams;
     }
-
-
-
-
 
 
 

@@ -1,8 +1,6 @@
 package com.gangE.DongoShop.repository;
 
 import com.gangE.DongoShop.model.ExamProduct;
-import com.gangE.DongoShop.model.Product;
-import com.gangE.DongoShop.model.WordProduct;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,5 +16,7 @@ public interface ExamProductRepository extends JpaRepository<ExamProduct, Long> 
 
     ExamProduct findByProductIdAndExamLocal(int productId, int prevId);
 
+    @Query("SELECT MAX(ep.examLocal) FROM ExamProduct ep WHERE ep.product.id = :product")
+    Integer findMaxExamLocalByProduct(@Param("product") long product);
 
 }
