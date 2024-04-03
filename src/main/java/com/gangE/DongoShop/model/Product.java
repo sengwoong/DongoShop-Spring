@@ -2,6 +2,7 @@ package com.gangE.DongoShop.model;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.gangE.DongoShop.dto.ProductType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,18 +26,19 @@ public class Product {
     private Boolean visible;
     private int downloadCount;
     private int price;
-
     private LocalDateTime createdAt;
 
+    @Enumerated(EnumType.STRING)
+    private ProductType type;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")
     private Customer  user;
 
-
     @JsonIgnore
     @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE , orphanRemoval = true)
     private List<PostProduct> products;
+
     @JsonIgnore
     @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE , orphanRemoval = true)
     private List<ExamProduct> examProducts;
@@ -49,6 +51,5 @@ public class Product {
     protected void onCreateTime() {
         createdAt = LocalDateTime.now();
     }
-
 
 }

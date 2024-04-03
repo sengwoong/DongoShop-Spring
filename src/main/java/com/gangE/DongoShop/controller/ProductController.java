@@ -1,5 +1,6 @@
 package com.gangE.DongoShop.controller;
 
+import com.gangE.DongoShop.dto.SearchCriteria;
 import com.gangE.DongoShop.model.Product;
 import com.gangE.DongoShop.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,6 +38,13 @@ public class ProductController {
     public ResponseEntity<Page<Product>> GetVisibleMyProduct(Pageable pageable) {
         Page<Product> products = productService.GetVisibleProduct(pageable);
         return new ResponseEntity<>(products, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Conditional Search", description = "조건부 검색을 수행합니다.")
+    @GetMapping("search_options")
+    public ResponseEntity<List<Product>> searchProducts(@RequestBody SearchCriteria criteria) {
+        List<Product> products = productService.searchProducts(criteria.getType(),criteria.getContent(),criteria.getDownCountOrder(),criteria.getCurrentOrder());
+        return ResponseEntity.ok(products);
     }
 
     @Operation(summary = "select", description = "특정 제품 하나를 가져옵니다.")

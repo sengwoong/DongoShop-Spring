@@ -4,6 +4,7 @@ import com.gangE.DongoShop.model.Customer;
 import com.gangE.DongoShop.model.Product;
 import com.gangE.DongoShop.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -25,6 +26,12 @@ public class ProductService {
         this.customerService = customerService;
     }
 
+    // 조건부검색
+    public List<Product> searchProducts(String type, String content, String downCountOrder, String currentOrder) {
+        return productRepository.searchInAllProducts(type, content, downCountOrder, currentOrder);
+    }
+
+
 
     @Transactional(readOnly = true)
     public Page<Product> GetAllMyProduct(Pageable pageable) {
@@ -34,6 +41,7 @@ public class ProductService {
     }
 
 
+    // 문제 및 단어 순으로 쿼리 DSL로 리펙토링
     @Transactional(readOnly = true)
     public Page<Product> GetVisibleProduct(Pageable pageable) {
         // visible 필드가 true인 프로덕트만 가져오기
@@ -47,13 +55,29 @@ public class ProductService {
     }
     @Transactional
     public Product addNewProduct(Product product) {
-        Customer customer = customerService.getCurrentCustomer();
-        product.setVisible(false);
-        // 유저아이디에 값넣기 변경
-        product.setUser(customer); // 현재 고객을 제품에 할당
-        System.out.println("product");
-        System.out.println(product);
-        return productRepository.save(product); // 제품 저장 후 반환
+        try {
+            Customer customer = customerService.getCurrentCustomer();
+            product.setVisible(false);
+
+            // 유저아이디에 값넣기 변경
+            product.setUser(customer); // 현재 고객을 제품에 할당
+            product.setDownloadCount(0);
+            System.out.println("product");
+            System.out.println(product);
+            return productRepository.save(product); // 제품 저장 후 반환
+        } catch (DataAccessException e) {
+            // 데이터 접근 예외 처리
+            e.printStackTrace(); // 로깅
+            // 적절한 응답 반환\
+            System.out.printf(String.valueOf(e));
+
+        } catch (Exception e) {
+            // 그 외 예외 처리
+            e.printStackTrace(); // 로깅
+            // 적절한 응답 반환
+            System.out.printf(String.valueOf(e));
+        }
+        return productRepository.save(product);
     }
 
     // 프로덕트 삭제
@@ -138,6 +162,7 @@ public class ProductService {
         // 업데이트된 제품 저장
         productRepository.save(productToUpdate);
     }
+
 
 
 }
