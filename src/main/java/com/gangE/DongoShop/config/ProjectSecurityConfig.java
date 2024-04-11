@@ -14,6 +14,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
+import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
@@ -31,11 +33,19 @@ import java.util.Collections;
 @Configuration
 public class ProjectSecurityConfig {
 
+    private  final DefaultOAuth2UserService oauth2UserService;
+
+    public ProjectSecurityConfig(DefaultOAuth2UserService oauth2UserService) {
+        this.oauth2UserService = oauth2UserService;
+    }
+
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         CsrfTokenRequestAttributeHandler requestHandler = new CsrfTokenRequestAttributeHandler();
         requestHandler.setCsrfRequestAttributeName("_csrf");
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+
                 .cors(corsCustomizer -> corsCustomizer.configurationSource(new CorsConfigurationSource() {
             @Override
             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
@@ -49,7 +59,7 @@ public class ProjectSecurityConfig {
                 return config;
             }
         })).csrf((csrf) -> csrf.csrfTokenRequestHandler(requestHandler)
-                        .ignoringRequestMatchers("/","/**")
+                        .ignoringRequestMatchers("/login","/register")
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
                 .addFilterAfter(new RequestValidationAfterFilter(), BasicAuthenticationFilter.class)
@@ -58,10 +68,14 @@ public class ProjectSecurityConfig {
 
                         .requestMatchers("/", "/**").permitAll()
                 )
+                .oauth2Login(oauth2 -> oauth2
+                        .redirectionEndpoint(endpoint -> endpoint.baseUri( "/oauth2/callback/*"))
+                        .userInfoEndpoint(endpoint -> endpoint.userService(oauth2UserService)))
                 .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults());
 
         return http.build();
+
     }
 
     @Bean

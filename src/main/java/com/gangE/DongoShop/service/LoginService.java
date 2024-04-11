@@ -84,6 +84,40 @@ public class LoginService {
     }
 
 
+    // OAuth 가입시 최초의 로그인시에는 포인트 생성 만일 최초의 가입이 아니면 그대로 로그인
+    public UserToken OAuthRegisterUser(Customer customer) {
+        Customer isDuplication = customerRepository.findByName(customer.getName());
+        if(isDuplication != null){
+            return null;
+        }
+        EmailAndPwd authentication = new EmailAndPwd(customer.getEmail(), customer.getPwd());
+
+
+        Point point = new Point();
+        try {
+            String hashPwd = passwordEncoder.encode(customer.getPwd());
+            customer.setPwd(hashPwd);
+            customer.setCreateDt(String.valueOf(new Date(System.currentTimeMillis())));
+            customerRepository.save(customer);
+
+            point.setUser(customer);
+            point.setPoint(0); // 초기 포인트를 0으로 설정
+            pointRepository.save(point);
+            UserToken token = loginUser(authentication);
+            return token;
+
+        } catch (Exception ex) {
+
+        }
+
+
+
+
+        return null;
+    }
+
+
+
 
 
 }

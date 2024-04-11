@@ -42,10 +42,17 @@ public class ProductController {
 
     @Operation(summary = "Conditional Search", description = "조건부 검색을 수행합니다.")
     @GetMapping("search_options")
-    public ResponseEntity<List<Product>> searchProducts(@RequestBody SearchCriteria criteria) {
-        List<Product> products = productService.searchProducts(criteria.getType(),criteria.getContent(),criteria.getDownCountOrder(),criteria.getCurrentOrder());
+    public ResponseEntity<Page<Product>> searchProducts(@RequestParam String type,
+                                                        @RequestParam String content,
+                                                        @RequestParam String downCountOrder,
+                                                        @RequestParam String currentOrder,
+                                                        @RequestParam int page,
+                                                        @RequestParam int size
+                                                        ) {
+        Page<Product> products = productService.searchProducts(type,content,downCountOrder,currentOrder,page,size);
         return ResponseEntity.ok(products);
     }
+
 
     @Operation(summary = "select", description = "특정 제품 하나를 가져옵니다.")
     @GetMapping("select/{productId}")

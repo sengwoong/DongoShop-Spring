@@ -27,10 +27,10 @@ public class ProductService {
     }
 
     // 조건부검색
-    public List<Product> searchProducts(String type, String content, String downCountOrder, String currentOrder) {
-        return productRepository.searchInAllProducts(type, content, downCountOrder, currentOrder);
-    }
+    public Page<Product> searchProducts(String type, String content, String downCountOrder, String currentOrder, int page, int size) {
+        return productRepository.searchInAllProducts(type, content, downCountOrder, currentOrder, page, size);
 
+    }
 
 
     @Transactional(readOnly = true)
