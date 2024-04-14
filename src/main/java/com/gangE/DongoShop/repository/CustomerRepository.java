@@ -18,7 +18,8 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
     @Query("SELECT c FROM Customer c LEFT JOIN FETCH c.authorities WHERE c.id = :customerId")
     Customer findByIdWithAuthorities(@Param("customerId") int id);
-
+    @Query("SELECT c FROM Customer c LEFT JOIN FETCH c.authorities WHERE c.name = :name")
+    Customer findByNameWithAuthorities(@Param("name") String name);
     @Query("SELECT c FROM Customer c LEFT JOIN FETCH c.authorities WHERE c.email = :email")
     Customer findByEmailWithAuthorities(@Param("email") String email);
 

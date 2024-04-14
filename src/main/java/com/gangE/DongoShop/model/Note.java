@@ -8,6 +8,8 @@ import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -19,9 +21,9 @@ public class Note {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String title;
+
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product")
-    private NoteProduct product;
+    @OneToMany(mappedBy = "note")
+    private List<NoteProduct> noteProduct;
 
 }

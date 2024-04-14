@@ -52,11 +52,8 @@ public class Product {
         createdAt = LocalDateTime.now();
     }
 
-
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "Note")
-    private NoteProduct note;
-
+    @OneToMany(mappedBy = "product")
+    private List<NoteProduct> note;
 
 }

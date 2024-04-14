@@ -34,9 +34,10 @@ import java.util.Collections;
 public class ProjectSecurityConfig {
 
     private  final DefaultOAuth2UserService oauth2UserService;
-
-    public ProjectSecurityConfig(DefaultOAuth2UserService oauth2UserService) {
+    private  final OAuth2SuccessHandler oAuth2SuccessHandler;
+    public ProjectSecurityConfig(DefaultOAuth2UserService oauth2UserService, OAuth2SuccessHandler oAuth2SuccessHandler) {
         this.oauth2UserService = oauth2UserService;
+        this.oAuth2SuccessHandler = oAuth2SuccessHandler;
     }
 
     @Bean
@@ -58,8 +59,10 @@ public class ProjectSecurityConfig {
                 config.setMaxAge(3600L);
                 return config;
             }
-        })).csrf((csrf) -> csrf.csrfTokenRequestHandler(requestHandler)
-                        .ignoringRequestMatchers("/login","/register")
+        }))
+
+                .csrf((csrf) -> csrf.csrfTokenRequestHandler(requestHandler)
+                        .ignoringRequestMatchers("/user/login","/user/register")
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
                 .addFilterAfter(new RequestValidationAfterFilter(), BasicAuthenticationFilter.class)
@@ -69,8 +72,11 @@ public class ProjectSecurityConfig {
                         .requestMatchers("/", "/**").permitAll()
                 )
                 .oauth2Login(oauth2 -> oauth2
+//                        .authorizationEndpoint(endpoint ->endpoint.baseUri("api/vi/auth/oauth2"))
                         .redirectionEndpoint(endpoint -> endpoint.baseUri( "/oauth2/callback/*"))
-                        .userInfoEndpoint(endpoint -> endpoint.userService(oauth2UserService)))
+                        .userInfoEndpoint(endpoint -> endpoint.userService(oauth2UserService))
+                        .successHandler(oAuth2SuccessHandler)
+                )
                 .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults());
 
@@ -78,14 +84,10 @@ public class ProjectSecurityConfig {
 
     }
 
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-
-
-
-
 
 }

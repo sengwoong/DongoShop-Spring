@@ -16,13 +16,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
-import javax.crypto.SecretKey;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.gangE.DongoShop.util.Token.CreateToekn;
 
 @Component
 public class DongoUsernamePwdAuthenticationProvider implements AuthenticationProvider {
